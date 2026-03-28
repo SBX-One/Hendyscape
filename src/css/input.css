@@ -1,0 +1,217 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+@theme {
+	--color-black: #000000;
+	--color-grey: #212122;
+	--color-white: #ffffff;
+	--color-light-grey: #ddddde;
+	--animate-fade-in-right: fade-in-right 1s ease forwards;
+	--animate-fade-in-bottom: fade-in-bottom 1s ease forwards;
+	--animate-fade-in-top: fade-in-top 0.5s ease forwards;
+	--animate-fade-in-text: fade-in-text 0.2s ease forwards;
+}
+
+@font-face {
+	font-family: "NeueHaas";
+	src: url("../asset/font/NeueHaasDisplayThin.ttf") format("truetype");
+	font-weight: 100;
+}
+
+@font-face {
+	font-family: "NeueHaas";
+	src: url("../asset/font/NeueHaasDisplayLight.ttf") format("truetype");
+	font-weight: 300;
+}
+
+@font-face {
+	font-family: "NeueHaas";
+	src: url("../asset/font/NeueHaasDisplayRoman.ttf") format("truetype");
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: "NeueHaas";
+	src: url("../asset/font/NeueHaasDisplayMediu.ttf") format("truetype");
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: "NeueHaas";
+	src: url("../asset/font/NeueHaasDisplayBold.ttf") format("truetype");
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: "NeueHaas";
+	src: url("../asset/font/NeueHaasDisplayBlack.ttf") format("truetype");
+	font-weight: 900;
+}
+
+@keyframes fade-in-right {
+	from {
+		opacity: 0;
+		transform: translateX(100px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes fade-in-bottom {
+	from {
+		opacity: 0;
+		transform: translateY(50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fade-in-top {
+	from {
+		opacity: 0;
+		transform: translateY(-50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fade-in-text {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in-right {
+	opacity: 0;
+}
+
+.animate-fade-in-bottom {
+	opacity: 0;
+}
+
+.animate-fade-in-text {
+	opacity: 0;
+}
+
+.animate-fade-in-top {
+	opacity: 0;
+}
+
+@layer components {
+	.nav-border {
+		@apply border-b border-grey pb-0.5;
+	}
+
+	.nav-link {
+		@apply relative flex items-center justify-between py-2 overflow-hidden min-w-[240px];
+	}
+
+	.nav-curtain {
+		@apply absolute inset-0 bg-grey;
+		transform: translateX(-101%);
+		transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+	}
+
+	.nav-link:hover .nav-curtain {
+		transform: translateX(0);
+	}
+
+	.nav-text {
+		@apply relative z-10 text-[14px] text-neutral-900;
+		left: 0;
+		transition:
+			color 0.3s ease,
+			transform 0.45s cubic-bezier(0.76, 0, 0.24, 1),
+			left 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+	}
+
+	.nav-link:hover .nav-text {
+		@apply text-white;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.nav-arrow {
+		@apply relative z-10 w-[18px] h-[18px] shrink-0;
+	}
+
+	.arrow-dark {
+		@apply absolute top-0 -left-2;
+		transition: opacity 0.3s ease;
+		transform: rotate(-40deg);
+	}
+
+	.arrow-white {
+		@apply absolute top-0 -left-2 opacity-0;
+		transition: opacity 0.3s ease;
+	}
+
+	.nav-link:hover .arrow-dark {
+		@apply opacity-0;
+	}
+
+	.nav-link:hover .arrow-white {
+		@apply opacity-100;
+	}
+
+	.header-text span {
+		@apply font-normal text-[280px] text-grey;
+	}
+
+	.descri-text,
+	.disclaimer-text {
+		@apply flex flex-wrap;
+	}
+
+	.descri-text span {
+		@apply font-normal text-base text-[#212122];
+	}
+
+	.disclaimer-text span {
+		@apply font-bold text-xl text-grey;
+	}
+
+	.nav-black {
+		@apply relative pb-1;
+	}
+
+	.nav-black::after {
+		content: "";
+		@apply absolute bottom-0 left-0 h-0.5 bg-black;
+		width: 0;
+		transition: width 0.3s ease;
+	}
+
+	.nav-black:hover::after {
+		width: 100%;
+	}
+}
+
+* {
+	font-family: "NeueHaas", sans-serif;
+}
+
+.section {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	font-weight: 600;
+	font-size: 1.5em;
+	text-align: center;
+	position: relative;
+	box-sizing: border-box;
+	background: var(--color-grey);
+	overflow: hidden;
+}
