@@ -209,6 +209,10 @@
 	.nav-black:hover::after {
 		width: 100%;
 	}
+
+	.about-card {
+		@apply max-w-[300px] flex flex-col gap-2 font-medium text-sm text-grey;
+	}
 }
 
 * {
@@ -222,4 +226,27 @@
 	position: relative;
 	background: var(--color-white);
 	overflow: hidden;
+}
+
+.collapse-wrapper:hover {
+	cursor: pointer;
+}
+
+#expanded-menu {
+	background-color: transparent;
+	border-bottom: 1px solid var(--light);
+	overflow: hidden;
+	height: 0;
+}
+
+.content {
+	padding: 24px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.content img {
+	width: 32%;
+	object-fit: cover;
+	opacity: 0;
 }

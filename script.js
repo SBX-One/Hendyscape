@@ -105,7 +105,7 @@ function animateTextByWord(element, fromVars = {}, scrollTriggerConfig = {}) {
 }
 
 // ============================================
-// GSAP SCROLL PIN (existing)
+// GSAP SCROLL PIN
 // ============================================
 
 var panels = gsap.utils.toArray(".section");
@@ -115,12 +115,8 @@ panels.forEach((panel, i) => {
 	let innerpanel = panel.querySelector(".section-inner");
 
 	let panelHeight = innerpanel.offsetHeight;
-	console.log(panelHeight);
-
 	let windowHeight = window.innerHeight;
-
 	let difference = panelHeight - windowHeight;
-
 	let fakeScrollRatio = difference > 0 ? difference / (difference + windowHeight) : 0;
 
 	if (fakeScrollRatio) {
@@ -151,24 +147,16 @@ panels.forEach((panel, i) => {
 const aboutSection = document.querySelectorAll(".slides-wrapper .section")[1];
 
 if (aboutSection) {
-	// Header bar: 01 / About / Hendyscape
 	animateFrom(aboutSection.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, { start: "top 80%" });
-
-	// "About Us" title — slide dari kiri
 	animateFrom(aboutSection.querySelector("h1.text-8xl"), { x: -60, duration: 1 }, { start: "top 80%" });
 
-	// Paragraf — teks muncul per kata
 	aboutSection.querySelectorAll("p").forEach((p) => {
 		animateTextByWord(p, {}, { start: "top 85%" });
 	});
 
-	// Gambar kiri bawah (about-2) — fade dari bawah
 	animateFrom(aboutSection.querySelector('img[src*="about-2"]'), { y: 50, duration: 0.9 }, { start: "top 75%" });
-
-	// Gambar kanan (about-1) — slide dari kanan
 	animateFrom(aboutSection.querySelector('img[src*="about-1"]'), { x: 60, duration: 1 }, { start: "top 75%" });
 
-	// "Contact Us" link — fade dari bawah
 	const contactLink = aboutSection.querySelector('a[href="#"]');
 	animateFrom(contactLink, { y: 20, duration: 0.6 }, { start: "top 90%" });
 
@@ -179,3 +167,83 @@ if (aboutSection) {
 		animateTextByWord(el, { duration: 1, y: 30 }, { start: "top 90%" });
 	});
 }
+
+// ============================================
+// ABOUT CARDS - Muncul setelah paragraf selesai
+// ============================================
+
+const quoteP = document.querySelector(".h-dvh p");
+const aboutCards = document.querySelectorAll(".about-card");
+
+if (quoteP && aboutCards.length > 0) {
+	const wordCount = quoteP.innerText.trim().split(/\s+/).length;
+	const estimatedDelay = wordCount * 0.04 + 0.3;
+
+	gsap.from(aboutCards, {
+		scrollTrigger: {
+			trigger: quoteP,
+			start: "top 85%",
+		},
+		opacity: 0,
+		y: 30,
+		stagger: 0.15,
+		duration: 0.7,
+		ease: "power2.out",
+		delay: estimatedDelay,
+	});
+}
+
+// ============================================
+// PROJECT SECTION - Scroll Animations
+// ============================================
+
+const projectSection = document.querySelectorAll(".slides-wrapper .section")[2];
+
+if (projectSection) {
+	// Header bar: 03 / Project / Hendyscape
+	animateFrom(projectSection.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, { start: "top 80%" });
+
+	// "Latest Project" title — slide dari kanan
+	animateFrom(projectSection.querySelector("h1.text-8xl"), { x: 60, duration: 1 }, { start: "top 80%" });
+
+	// Tiap collapse-item fade in stagger dari bawah
+	animateFrom(projectSection.querySelectorAll(".collapse-item"), { y: 40, duration: 0.7, stagger: 0.12 }, { start: "top 75%" });
+}
+
+// ============================================
+// COLLAPSE - Per item, pakai class bukan id
+// ============================================
+
+document.querySelectorAll(".collapse-item").forEach((item) => {
+	const trigger = item.querySelector(".collapse-trigger");
+	const body = item.querySelector(".collapse-body");
+	const imgs = body.querySelectorAll("img");
+
+	// Set initial state
+	gsap.set(body, { height: 0, overflow: "hidden" });
+	gsap.set(imgs, { opacity: 0 });
+
+	// Tiap item punya timeline sendiri
+	const tl = gsap
+		.timeline({ paused: true })
+		.to(body, {
+			height: "auto",
+			duration: 1,
+			ease: "power4.out",
+		})
+		.to(
+			imgs,
+			{
+				opacity: 1,
+				duration: 0.5,
+				stagger: 0.05,
+				ease: "power4.inOut",
+			},
+			0.3,
+		)
+		.reverse();
+
+	trigger.addEventListener("click", () => {
+		tl.reversed(!tl.reversed());
+	});
+});
