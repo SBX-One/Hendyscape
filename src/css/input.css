@@ -108,6 +108,19 @@
 	opacity: 0;
 }
 
+/* ============================================
+   Word-by-word animation wrapper
+   ============================================ */
+.word-wrap {
+	display: inline-block;
+	overflow: hidden;
+	vertical-align: bottom;
+}
+
+.word {
+	display: inline-block;
+}
+
 @layer components {
 	.nav-border {
 		@apply border-b border-grey pb-0.5;
@@ -204,14 +217,9 @@
 
 .section {
 	width: 100%;
-	height: 100vh;
 	display: flex;
-	justify-content: center;
-	font-weight: 600;
-	font-size: 1.5em;
-	text-align: center;
+	flex-direction: column;
 	position: relative;
-	box-sizing: border-box;
-	background: var(--color-grey);
+	background: var(--color-white);
 	overflow: hidden;
 }
