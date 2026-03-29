@@ -494,6 +494,13 @@
       }
     }
   }
+  .hover\:text-white {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-white);
+      }
+    }
+  }
 }
 @font-face {
   font-family: "NeueHaas";
