@@ -2,6 +2,14 @@
 @tailwind utilities;
 
 @theme {
+	--breakpoint-mobile-sm: 480px;
+	--breakpoint-mobile: 640px;
+	--breakpoint-tablet: 768px;
+	--breakpoint-laptop-sm: 1024px;
+	--breakpoint-laptop: 1280px;
+	--breakpoint-desktop: 1440px;
+	--breakpoint-desktop-lg: 1600px;
+	--breakpoint-desktop-xl: 1920px;
 	--color-black: #000000;
 	--color-grey: #212122;
 	--color-white: #ffffff;
@@ -49,23 +57,47 @@
 }
 
 @keyframes fade-in-right {
-	from { opacity: 0; transform: translateX(100px); }
-	to   { opacity: 1; transform: translateX(0); }
+	from {
+		opacity: 0;
+		transform: translateX(100px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
 }
 
 @keyframes fade-in-bottom {
-	from { opacity: 0; transform: translateY(50px); }
-	to   { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 @keyframes fade-in-top {
-	from { opacity: 0; transform: translateY(-50px); }
-	to   { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(-50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 @keyframes fade-in-text {
-	from { opacity: 0; transform: translateY(20px); }
-	to   { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 * {
@@ -73,7 +105,6 @@
 }
 
 @layer components {
-
 	.animate-fade-in-right,
 	.animate-fade-in-bottom,
 	.animate-fade-in-text,
@@ -90,7 +121,7 @@
 	}
 
 	.header-text span {
-		@apply font-normal text-[280px] text-grey;
+		@apply font-normal mobile-sm:text-[72px] mobile:text-[100px] tablet:text-[120px] laptop-sm:text-[160px] laptop:text-[200px] desktop:text-[240px] desktop-lg:text-[270px] desktop-xl:text-[280px] text-grey hover:-translate-y-4 duration-300;
 	}
 
 	.descri-text,
@@ -115,7 +146,7 @@
 	}
 
 	.content {
-		@apply p-6 flex justify-between;
+		@apply py-6 flex justify-between;
 	}
 
 	.content img {
@@ -131,7 +162,7 @@
 	}
 
 	.nav-link {
-		@apply relative flex items-center justify-between py-2 overflow-hidden min-w-[240px];
+		@apply relative flex items-center justify-between py-2 overflow-hidden w-[240px];
 	}
 
 	.nav-curtain {
@@ -215,7 +246,7 @@
 	}
 
 	.footer-nav-link {
-		@apply relative flex items-center justify-between py-2 overflow-hidden min-w-[240px];
+		@apply relative flex items-center justify-between py-2 overflow-hidden mobile-sm:w-[200px] mobile:w-[240px];
 	}
 
 	.footer-nav-curtain {

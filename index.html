@@ -13,7 +13,7 @@
 
 	<!-- navbar -->
 	<section class="px-[50px] pt-4 flex items-start justify-between">
-		<div class="flex gap-2">
+		<div class="flex mobile-sm:flex-col tablet:flex-row mobile-sm:gap-1 tablet:gap-2">
 			<div class="flex flex-col gap-1">
 				<a data-index="1" href="#" class="animate-fade-in-top nav-border">
 					<div class="nav-link">
@@ -100,8 +100,9 @@
 			<span data-index="9" class="animate-fade-in-text">p</span>
 			<span data-index="10" class="animate-fade-in-text">e</span>
 		</div>
-		<div class="flex items-center justify-between">
-			<div class="max-w-[34%] flex flex-col gap-4">
+		<div
+			class="flex mobile-sm:flex-col gap-4 tablet:flex-row tablet:items-end laptop-sm:items-center justify-between">
+			<div class="tablet:max-w-[65%] laptop:max-w-[34%] flex flex-col gap-4">
 				<div class="flex gap-[3px] descri-text">
 					Into tent 30,000ft for pain die crank before price. Eat teeth effects winning to could done tiger
 					another. Every request managing sexy important high game crank game responsible. Knowledge cross
@@ -111,7 +112,7 @@
 					Streamline should it rundown on dunder anomalies air diarize plan.
 				</div>
 			</div>
-			<a data-index="24" href="#" class="nav-black group flex gap-4 items-center animate-fade-in-text">
+			<a data-index="24" href="#" class="nav-black group flex gap-4 items-center animate-fade-in-text max-w-fit">
 				<h1 class="font-normal text-2xl text-grey">Explore More</h1>
 				<img src="/src/asset/icon/black-arrow.webp" alt="arrow"
 					class="duration-300 group-hover:rotate-90 max-w-7">
@@ -125,62 +126,78 @@
 		<section class="section">
 			<div class="section-content">
 				<div class="section-inner">
-					<img src="/src/asset/img/hero.webp" alt="">
+					<img class="mobile-sm:h-lvh w-full laptop-sm:h-lvh object-cover" src="/src/asset/img/hero.webp"
+						alt="">
 				</div>
 			</div>
 		</section>
 
 		<section class="section">
-			<div class="section-inner flex flex-col gap-16 px-[50px] py-[100px]">
-				<div class="flex justify-between items-center pb-2 border-b border-light-grey">
-					<div class="flex w-1/5 justify-between">
-						<h1>01</h1>
-						<h2>About</h2>
+			<div class="section-inner">
+
+				<div class="flex flex-col gap-16 px-[50px] py-[100px]">
+					<div class="flex justify-between items-center pb-2 border-b border-light-grey">
+						<div class="flex w-1/5 justify-between">
+							<h1>01</h1>
+							<h2>About</h2>
+						</div>
+						<h1 class="font-normal text-base text-grey">Hendyscape</h1>
 					</div>
-					<h1 class="font-normal text-base text-grey">Hendyscape</h1>
-				</div>
-				<div class="flex justify-between">
-					<div class="flex flex-col justify-between">
-						<h1 class="font-normal text-8xl">About Us</h1>
-						<img class="max-w-[240px]" src="/src/asset/img/about-2.webp" alt="">
-					</div>
-					<div class="flex flex-col justify-end gap-[25%] w-1/4">
-						<p>We hurting lunch optimal got the start. Globalize dunder recap focus best left tentative.
-							Needle eat comes finish domains. Your me dangerous indicators enable crack pivot functional
-							ourselves goto. Inclusion highlights quarter welcome attached scraps deck. Procrastinating
-							give sexy roll files. Drawing-board stop requirements effects high could socialize.</p>
-						<p>ladder recap picture breakout. Culture so see down feature eat policy. Nobody replied better
-							fit company creep. Quarter indicators hours leverage and after. Hiring stronger plan
-							rehydrate welcome meaningful.</p>
-					</div>
-					<div class="flex flex-col items-center gap-20">
-						<img class="max-w-[380px]" src="/src/asset/img/about-1.webp" alt="">
-						<a href="#" class="nav-black group flex gap-4 items-center max-w-fit">
-							<h1 class="font-normal text-2xl text-grey">Contact Us</h1>
-							<img src="/src/asset/icon/black-arrow.webp" alt="arrow"
-								class="duration-300 group-hover:rotate-90 max-w-7">
-						</a>
-					</div>
-				</div>
-			</div>
-			<div class="h-dvh bg-[#F5F5F5] flex flex-col items-center justify-center gap-12">
-				<p class="max-w-[70%] font-normal text-5xl text-grey text-center">Feature centric meat eager invite.
-					Customer social replied welcome relaxation exploratory now view third. Hurting contribution us due
-					version got.</p>
-				<div class="flex gap-3">
-					<div class="about-card">
-						<img src="/src/asset/img/about-3.webp" alt="">
-						<h1>Designing</h1>
-					</div>
-					<div class="about-card">
-						<img src="/src/asset/img/about-4.webp" alt="">
-						<h1>Manufacture</h1>
-					</div>
-					<div class="about-card">
-						<img src="/src/asset/img/about-5.webp" alt="">
-						<h1>Maintenance</h1>
+					<div
+						class="flex mobile-sm:flex-col laptop-sm:flex-row mobile-sm:items-start laptop-sm:items-stretch justify-between gap-4">
+						<div class="flex flex-col justify-between">
+							<h1 class="font-normal tablet:text-5xl laptop-sm:text-6xl desktop:text-8xl">About Us</h1>
+							<img class="max-w-[240px] mobile-sm:hidden laptop-sm:block"
+								src="/src/asset/img/about-2.webp" alt="">
+						</div>
+						<div
+							class="flex flex-col justify-end mobile-sm:gap-4 laptop-sm:gap-[80px] desktop:w-2/5 laptop-sm:w-2/4">
+							<p>We hurting lunch optimal got the start. Globalize dunder recap focus best left tentative.
+								Needle eat comes finish domains. Your me dangerous indicators enable crack pivot
+								functional
+								ourselves goto. Inclusion highlights quarter welcome attached scraps deck.
+								Procrastinating
+								give sexy roll files. Drawing-board stop requirements effects high could socialize.</p>
+							<p>ladder recap picture breakout. Culture so see down feature eat policy. Nobody replied
+								better
+								fit company creep. Quarter indicators hours leverage and after. Hiring stronger plan
+								rehydrate welcome meaningful.</p>
+						</div>
+						<div class="flex flex-col items-center gap-20">
+							<img class="w-4/5 max-w-[380px] mobile-sm:hidden laptop-sm:block"
+								src="/src/asset/img/about-1.webp" alt="">
+							<a href="#" class="nav-black group flex gap-4 items-center max-w-fit">
+								<h1 class="font-normal text-2xl text-grey">Contact Us</h1>
+								<img src="/src/asset/icon/black-arrow.webp" alt="arrow"
+									class="duration-300 group-hover:rotate-90 max-w-7">
+							</a>
+						</div>
 					</div>
 				</div>
+
+				<div class="h-dvh bg-[#F5F5F5] flex flex-col items-center justify-center gap-12 px-4">
+					<p
+						class="tablet:max-w-[85%] mobile laptop-sm:max-w-[70%] font-normal mobile-sm:text-3xl tablet:text-5xl text-grey text-center">
+						Feature centric meat eager invite.
+						Customer social replied welcome relaxation exploratory now view third. Hurting contribution us
+						due
+						version got.</p>
+					<div class="flex gap-3">
+						<div class="about-card">
+							<img src="/src/asset/img/about-3.webp" alt="">
+							<h1>Designing</h1>
+						</div>
+						<div class="about-card">
+							<img src="/src/asset/img/about-4.webp" alt="">
+							<h1>Manufacture</h1>
+						</div>
+						<div class="about-card">
+							<img src="/src/asset/img/about-5.webp" alt="">
+							<h1>Maintenance</h1>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</section>
 
@@ -202,7 +219,7 @@
 				<div class="collapse-item">
 					<nav
 						class="collapse-trigger flex justify-between items-center py-6 border-b border-light-grey cursor-pointer">
-						<div class="flex w-1/5 justify-between items-center">
+						<div class="flex mobile-sm:w-3/5 tablet:w-2/5 desktop:w-1/5 justify-between items-center">
 							<h1 class="font-normal text-3xl text-grey">Casa De la Cruze</h1>
 							<h2 class="font-normal text-base text-grey">01</h2>
 						</div>
@@ -215,12 +232,14 @@
 								<img src="/src/asset/img/project-2.webp" alt="" />
 								<img src="/src/asset/img/project-3.webp" alt="" />
 							</div>
-							<div class="flex justify-between items-center">
-								<p class="max-w-[60%] font-normal text-base text-grey">ladder recap picture breakout.
+							<div
+								class="flex mobile-sm:flex-col laptop-sm:flex-row justify-between gap-3 mobile-sm:items-start laptop-sm:items-center">
+								<p class="laptop-sm:max-w-4/5 laptop:max-w-3/5 font-normal text-base text-grey">ladder
+									recap picture breakout.
 									Culture so see down feature eat policy. Nobody replied better fit company creep.
 									Quarter indicators hours leverage and after. Hiring stronger plan rehydrate welcome
 									meaningful.</p>
-								<a href="#" class="nav-black group flex gap-4 items-center">
+								<a href="#" class="nav-black group flex gap-4 items-center max-w-fit">
 									<h1 class="font-normal text-2xl text-grey">Learn More</h1>
 									<img src="/src/asset/icon/black-arrow.webp" alt="arrow"
 										class="duration-300 group-hover:rotate-90 max-w-7">
@@ -234,8 +253,8 @@
 				<div class="collapse-item">
 					<nav
 						class="collapse-trigger flex justify-between items-center py-6 border-b border-light-grey cursor-pointer">
-						<div class="flex w-1/5 justify-between items-center">
-							<h1 class="font-normal text-3xl text-grey">Swaerz Hulberg</h1>
+						<div class="flex mobile-sm:w-3/5 tablet:w-2/5 desktop:w-1/5 justify-between items-center">
+							<h1 class="font-normal text-3xl text-grey">Swaerz <p class="mobile-sm:block mobile:hidden"></p> Hulberg</h1>
 							<h2 class="font-normal text-base text-grey">02</h2>
 						</div>
 						<h1 class="font-normal text-base text-grey w-[90px]">Mexico<br>2024</h1>
@@ -247,8 +266,10 @@
 								<img src="/src/asset/img/project-2.webp" alt="" />
 								<img src="/src/asset/img/project-3.webp" alt="" />
 							</div>
-							<div class="flex justify-between items-center">
-								<p class="max-w-[60%] font-normal text-base text-grey">ladder recap picture breakout.
+							<div
+								class="flex mobile-sm:flex-col laptop-sm:flex-row justify-between gap-3 mobile-sm:items-start laptop-sm:items-center">
+								<p class="laptop-sm:max-w-4/5 laptop:max-w-3/5 font-normal text-base text-grey">ladder
+									recap picture breakout.
 									Culture so see down feature eat policy. Nobody replied better fit company creep.
 									Quarter indicators hours leverage and after. Hiring stronger plan rehydrate welcome
 									meaningful.</p>
@@ -266,7 +287,7 @@
 				<div class="collapse-item">
 					<nav
 						class="collapse-trigger flex justify-between items-center py-6 border-b border-light-grey cursor-pointer">
-						<div class="flex w-1/5 justify-between items-center">
+						<div class="flex mobile-sm:w-3/5 tablet:w-2/5 desktop:w-1/5 justify-between items-center">
 							<h1 class="font-normal text-3xl text-grey">Villa Solimar</h1>
 							<h2 class="font-normal text-base text-grey">03</h2>
 						</div>
@@ -279,8 +300,10 @@
 								<img src="/src/asset/img/project-2.webp" alt="" />
 								<img src="/src/asset/img/project-3.webp" alt="" />
 							</div>
-							<div class="flex justify-between items-center">
-								<p class="max-w-[60%] font-normal text-base text-grey">ladder recap picture breakout.
+							<div
+								class="flex mobile-sm:flex-col laptop-sm:flex-row justify-between gap-3 mobile-sm:items-start laptop-sm:items-center">
+								<p class="laptop-sm:max-w-4/5 laptop:max-w-3/5 font-normal text-base text-grey">ladder
+									recap picture breakout.
 									Culture so see down feature eat policy. Nobody replied better fit company creep.
 									Quarter indicators hours leverage and after. Hiring stronger plan rehydrate welcome
 									meaningful.</p>
@@ -298,7 +321,7 @@
 				<div class="collapse-item">
 					<nav
 						class="collapse-trigger flex justify-between items-center py-6 border-b border-light-grey cursor-pointer">
-						<div class="flex w-1/5 justify-between items-center">
+						<div class="flex mobile-sm:w-3/5 tablet:w-2/5 desktop:w-1/5 justify-between items-center">
 							<h1 class="font-normal text-3xl text-grey">Château Lumière</h1>
 							<h2 class="font-normal text-base text-grey">04</h2>
 						</div>
@@ -311,8 +334,10 @@
 								<img src="/src/asset/img/project-2.webp" alt="" />
 								<img src="/src/asset/img/project-3.webp" alt="" />
 							</div>
-							<div class="flex justify-between items-center">
-								<p class="max-w-[60%] font-normal text-base text-grey">ladder recap picture breakout.
+							<div
+								class="flex mobile-sm:flex-col laptop-sm:flex-row justify-between gap-3 mobile-sm:items-start laptop-sm:items-center">
+								<p class="laptop-sm:max-w-4/5 laptop:max-w-3/5 font-normal text-base text-grey">ladder
+									recap picture breakout.
 									Culture so see down feature eat policy. Nobody replied better fit company creep.
 									Quarter indicators hours leverage and after. Hiring stronger plan rehydrate welcome
 									meaningful.</p>
@@ -330,7 +355,7 @@
 				<div class="collapse-item">
 					<nav
 						class="collapse-trigger flex justify-between items-center py-6 border-b border-light-grey cursor-pointer">
-						<div class="flex w-1/5 justify-between items-center">
+						<div class="flex mobile-sm:w-3/5 tablet:w-2/5 desktop:w-1/5 justify-between items-center">
 							<h1 class="font-normal text-3xl text-grey">Hokkaido Retreat</h1>
 							<h2 class="font-normal text-base text-grey">05</h2>
 						</div>
@@ -343,8 +368,10 @@
 								<img src="/src/asset/img/project-2.webp" alt="" />
 								<img src="/src/asset/img/project-3.webp" alt="" />
 							</div>
-							<div class="flex justify-between items-center">
-								<p class="max-w-[60%] font-normal text-base text-grey">ladder recap picture breakout.
+							<div
+								class="flex mobile-sm:flex-col laptop-sm:flex-row justify-between gap-3 mobile-sm:items-start laptop-sm:items-center">
+								<p class="laptop-sm:max-w-4/5 laptop:max-w-3/5 font-normal text-base text-grey">ladder
+									recap picture breakout.
 									Culture so see down feature eat policy. Nobody replied better fit company creep.
 									Quarter indicators hours leverage and after. Hiring stronger plan rehydrate welcome
 									meaningful.</p>
@@ -367,19 +394,19 @@
 					</div>
 					<h1 class="font-normal text-base text-grey">Hendyscape</h1>
 				</div>
-				<h1 class="heading font-normal text-8xl text-grey my-12">Architectural Archive</h1>
-				<div class="grid grid-cols-3 gap-5">
+				<h1 class="heading font-normal mobile-sm:text-6xl mobile:text-8xl text-grey my-12">Architectural Archive</h1>
+				<div class="grid mobile-sm:grid-cols-2 tablet:grid-cols-3 gap-5">
 					<!-- Row 1 -->
 					<div class="cell">
 						<img src="/src/asset/img/gallery-1.webp" alt="Architecture 1">
 					</div>
-					<div class="cell empty"></div>
+					<div class="cell empty mobile-sm:hidden tablet:block"></div>
 					<div class="cell">
 						<img src="/src/asset/img/gallery-2.webp" alt="Architecture 2">
 					</div>
 
 					<!-- Row 2 -->
-					<div class="cell empty"></div>
+					<div class="cell empty mobile-sm:hidden tablet:block"></div>
 					<div class="cell">
 						<img src="/src/asset/img/gallery-3.webp" alt="Architecture 3">
 					</div>
@@ -394,13 +421,13 @@
 					<div class="cell">
 						<img src="/src/asset/img/gallery-6.webp" alt="Architecture 6">
 					</div>
-					<div class="cell empty"></div>
+					<div class="cell empty mobile-sm:hidden tablet:block"></div>
 
 					<!-- Row 4 -->
 					<div class="cell">
 						<img src="/src/asset/img/gallery-7.webp" alt="Architecture 7">
 					</div>
-					<div class="cell empty"></div>
+					<div class="cell empty mobile-sm:hidden tablet:block"></div>
 					<div class="cell">
 						<img src="/src/asset/img/gallery-8.webp" alt="Architecture 8">
 					</div>
@@ -408,14 +435,18 @@
 			</div>
 			<!-- footer -->
 			<img class="w-full" src="/src/asset/img/footer-outer.webp" alt="outer">
-			<div class="footer-bg relative flex flex-col gap-32 bg-[#030303] pt-[350px] px-[50px] pb-6">
+			<div
+				class="footer-bg relative flex flex-col gap-32 bg-[#030303] mobile-sm:pt-[100px] tablet:pt-[150px] laptop-sm:pt-[200px] desktop:pt-[350px] px-[50px] pb-6">
 
 				<img src="/src/asset/img/footer-inner.webp" alt="inner"
 					class="absolute max-w-1/2 top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
 
 				<div class="flex flex-col gap-20">
-					<div class="flex justify-between items-start">
-						<h1 class="footer-title font-normal text-[32px] text-white">Hendyscape</h1>
+					<div
+						class="flex mobile-sm:flex-col laptop-sm:flex-row gap-6 justify-between mobile-sm:items-center laptop-sm:items-start">
+						<h1
+							class="footer-title font-normal mobile-sm:text-[80px] mobile:text-[100px] tablet:text-[120px] laptop-sm:text-[32px] text-white">
+							Hendyscape</h1>
 
 						<div class="flex gap-2">
 							<div class="flex flex-col gap-1">
@@ -491,11 +522,13 @@
 						</a>
 					</div>
 
-					<h1 class="footer-tagline font-normal text-4xl text-white max-w-[40%]">Contact us to discuss your
+					<h1 class="footer-tagline font-normal text-4xl text-white laptop-sm:max-w-3/5 laptop:max-w-2/5">
+						Contact us to discuss your
 						project and
 						advise you on the best way to start</h1>
 
-					<div class="flex max-w-[70%] justify-between">
+					<div
+						class="flex mobile-sm:flex-col tablet:flex-row tablet:max-w-[90%] laptop:max-w-[70%] gap-4 justify-between">
 						<div class="footer-info flex flex-col gap-4 w-[80%]">
 							<h1 class="font-normal text-sm text-white">Address</h1>
 							<p class="font-normal text-xl text-white">88637 Hermann<br> Motorway, Malden 93567</p>
@@ -514,8 +547,10 @@
 				<div class="footer-bottom flex justify-between">
 					<h1 class="font-normal text-sm text-white/50">@2026 Hendyscape. All right reserved</h1>
 					<div class="flex gap-6">
-						<a href="#" class="font-normal text-sm text-white/50 hover:text-white duration-300 nav-white">Privacy</a>
-						<a href="#" class="font-normal text-sm text-white/50 hover:text-white duration-300 nav-white">Cookie</a>
+						<a href="#"
+							class="font-normal text-sm text-white/50 hover:text-white duration-300 nav-white">Privacy</a>
+						<a href="#"
+							class="font-normal text-sm text-white/50 hover:text-white duration-300 nav-white">Cookie</a>
 					</div>
 				</div>
 			</div>

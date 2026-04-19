@@ -20,6 +20,7 @@ function animateFrom(els, fromVars = {}, start = "top 85%") {
 		opacity: 0,
 		duration: 0.8,
 		ease: "power2.out",
+		clearProps: "opacity",
 		...fromVars,
 	});
 }
@@ -46,6 +47,7 @@ function animateTextByWord(el, fromVars = {}, start = "top 85%") {
 		stagger: 0.04,
 		duration: 0.5,
 		ease: "power2.out",
+		clearProps: "opacity",
 		...fromVars,
 	});
 }
@@ -66,35 +68,21 @@ function initNavAnimationDelay() {
 
 function initScrollPin() {
 	const panels = gsap.utils.toArray(".section");
-	panels.pop(); // skip last section
+	panels.pop(); // skip last section (Project & Footer)
 
 	panels.forEach((panel) => {
-		const inner = panel.querySelector(".section-inner");
-		const overflow = inner.offsetHeight - window.innerHeight;
-		const ratio = overflow > 0 ? overflow / (overflow + window.innerHeight) : 0;
-
-		if (ratio) panel.style.marginBottom = `${inner.offsetHeight * ratio}px`;
-
 		const tl = gsap.timeline({
 			scrollTrigger: {
 				trigger: panel,
-				start: "bottom bottom",
-				end: () => (ratio ? `+=${inner.offsetHeight}` : "bottom top"),
+				start: "bottom bottom", // Pin persis saat user nyentuh bagian paling bawah section
+				end: "bottom top", // Pin dilepas setelah user scroll sejauh 1 tinggi layar
 				pin: true,
-				pinSpacing: false,
+				pinSpacing: false, // Biarkan section berikutnya naik menutupi
 				scrub: true,
 			},
 		});
 
-		if (ratio) {
-			tl.to(inner, {
-				yPercent: -100,
-				y: window.innerHeight,
-				duration: 1 / (1 - ratio) - 1,
-				ease: "none",
-			});
-		}
-
+		// Animasi mengecil dan pudar ke belakang
 		tl.fromTo(panel, { scale: 1, opacity: 1 }, { scale: 0.7, opacity: 0.5, duration: 0.9 }).to(panel, { opacity: 0, duration: 0.1 });
 	});
 }
@@ -108,7 +96,7 @@ function initAboutAnimations() {
 	if (!section) return;
 
 	animateFrom(section.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, "top 80%");
-	animateFrom(section.querySelector("h1.text-8xl"), { x: -60, duration: 1 }, "top 80%");
+	animateFrom(section.querySelector("h1"), { x: -60, duration: 1 }, "top 80%");
 	animateFrom(section.querySelector('img[src*="about-2"]'), { y: 50, duration: 0.9 }, "top 75%");
 	animateFrom(section.querySelector('img[src*="about-1"]'), { x: 60, duration: 1 }, "top 75%");
 	animateFrom(section.querySelector('a[href="#"]'), { y: 20, duration: 0.6 }, "top 90%");
@@ -135,6 +123,7 @@ function initAboutCardAnimations() {
 		stagger: 0.15,
 		duration: 0.7,
 		ease: "power2.out",
+		clearProps: "opacity",
 		delay,
 	});
 }
@@ -169,12 +158,13 @@ function initGalleryAnimations() {
 			y: 40,
 			duration: 0.6,
 			ease: "power2.out",
+			clearProps: "opacity",
 		});
 	});
 }
 
 // ============================================================
-// COLLAPSE — accordion open/close per item
+// COLLAPSE — accordion open/close per item (vanilla JS)
 // ============================================================
 
 function initCollapse() {
@@ -183,15 +173,71 @@ function initCollapse() {
 		const body = item.querySelector(".collapse-body");
 		const imgs = body.querySelectorAll("img");
 
-		gsap.set(body, { height: 0, overflow: "hidden" });
-		gsap.set(imgs, { opacity: 0 });
+		// Initial state
+		body.style.height = "0px";
+		body.style.overflow = "hidden";
+		body.style.transition = "height 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
+		imgs.forEach((img) => {
+			img.style.opacity = "0";
+			img.style.transition = "opacity 0.5s ease";
+		});
 
-		const tl = gsap
-			.timeline({ paused: true, reversed: true })
-			.to(body, { height: "auto", duration: 1, ease: "power4.out" })
-			.to(imgs, { opacity: 1, duration: 0.5, stagger: 0.05, ease: "power4.inOut" }, 0.3);
+		let isOpen = false;
 
-		trigger.addEventListener("click", () => tl.reversed(!tl.reversed()));
+		trigger.addEventListener("click", () => {
+			if (!isOpen) {
+				// Open: measure full height then animate to it
+				body.style.height = "auto";
+				const fullHeight = body.scrollHeight + "px";
+				body.style.height = "0px";
+
+				// Force reflow so transition fires
+				body.offsetHeight;
+
+				body.style.height = fullHeight;
+
+				// Fade in images after body starts opening
+				setTimeout(() => {
+					imgs.forEach((img, i) => {
+						setTimeout(() => {
+							img.style.opacity = "1";
+						}, i * 50);
+					});
+				}, 300);
+
+				// After transition ends, set height to auto so it adapts to content
+				body.addEventListener(
+					"transitionend",
+					() => {
+						if (isOpen) {
+							body.style.height = "auto";
+							ScrollTrigger.refresh();
+						}
+					},
+					{ once: true },
+				);
+			} else {
+				// Close: lock height back to px value, then animate to 0
+				body.style.height = body.scrollHeight + "px";
+				body.offsetHeight; // force reflow
+
+				imgs.forEach((img) => {
+					img.style.opacity = "0";
+				});
+
+				body.style.height = "0px";
+
+				body.addEventListener(
+					"transitionend",
+					() => {
+						if (!isOpen) ScrollTrigger.refresh();
+					},
+					{ once: true },
+				);
+			}
+
+			isOpen = !isOpen;
+		});
 	});
 }
 
