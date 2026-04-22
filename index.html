@@ -12,9 +12,68 @@
 <body class="bg-white flex flex-col overflow-x-hidden">
 	<div class="flair flair--3 hidden laptop-sm:block"></div>
 	<!-- navbar -->
+	<!-- sidebar overlay -->
+	<div id="sidebar-overlay"
+		class="fixed inset-0 bg-black/40 z-40 opacity-0 pointer-events-none transition-opacity duration-500"></div>
+
+	<!-- sidebar -->
+	<div id="sidebar"
+		class="fixed top-0 right-0 h-full w-full bg-white z-50 flex flex-col px-8 py-8 gap-8 -translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]">
+		<button id="sidebar-close" class="self-end w-8 h-8 flex items-center justify-center rotate-180">
+			<img src="/src/asset/icon/black-arrow.webp" alt="">
+			</svg>
+		</button>
+		<nav class="flex flex-col gap-1 mt-4">
+			<a href="#" class="sidebar-link nav-border">
+				<div class="nav-link w-full">
+					<div class="nav-curtain"></div><span class="nav-text">Home</span>
+					<div class="nav-arrow"><img class="arrow-dark" src="/src/asset/icon/black-arrow.webp" width="18"
+							height="18" alt=""><img class="arrow-white" src="/src/asset/icon/white-arrow.webp"
+							width="18" height="18" alt=""></div>
+				</div>
+			</a>
+			<a href="#" class="sidebar-link nav-border">
+				<div class="nav-link w-full">
+					<div class="nav-curtain"></div><span class="nav-text">Service</span>
+					<div class="nav-arrow"><img class="arrow-dark" src="/src/asset/icon/black-arrow.webp" width="18"
+							height="18" alt=""><img class="arrow-white" src="/src/asset/icon/white-arrow.webp"
+							width="18" height="18" alt=""></div>
+				</div>
+			</a>
+			<a href="#" class="sidebar-link nav-border">
+				<div class="nav-link w-full">
+					<div class="nav-curtain"></div><span class="nav-text">Gallery</span>
+					<div class="nav-arrow"><img class="arrow-dark" src="/src/asset/icon/black-arrow.webp" width="18"
+							height="18" alt=""><img class="arrow-white" src="/src/asset/icon/white-arrow.webp"
+							width="18" height="18" alt=""></div>
+				</div>
+			</a>
+			<a href="#" class="sidebar-link nav-border">
+				<div class="nav-link w-full">
+					<div class="nav-curtain"></div><span class="nav-text">Project</span>
+					<div class="nav-arrow"><img class="arrow-dark" src="/src/asset/icon/black-arrow.webp" width="18"
+							height="18" alt=""><img class="arrow-white" src="/src/asset/icon/white-arrow.webp"
+							width="18" height="18" alt=""></div>
+				</div>
+			</a>
+			<a href="#" class="sidebar-link nav-border">
+				<div class="nav-link w-full">
+					<div class="nav-curtain"></div><span class="nav-text">About</span>
+					<div class="nav-arrow"><img class="arrow-dark" src="/src/asset/icon/black-arrow.webp" width="18"
+							height="18" alt=""><img class="arrow-white" src="/src/asset/icon/white-arrow.webp"
+							width="18" height="18" alt=""></div>
+				</div>
+			</a>
+		</nav>
+		<div class="mt-auto flex gap-2 items-center">
+			<img src="/src/asset/icon/logo.webp" alt="logo" class="max-w-7">
+			<h1 class="font-normal text-base text-grey">Hendyscape</h1>
+		</div>
+	</div>
+
 	<section
-		class="px-7 laptop-sm:px-[50px] pt-4 pb-8 tablet:pb-0 flex flex-row-reverse tablet:flex-row items-center tablet:items-start justify-between">
-		<a class="w-8 block tablet:hidden" href="#"><img src="/src/asset/icon/ham.webp" alt=""></a>
+		class="relative z-10 px-7 laptop-sm:px-[50px] pt-4 pb-8 tablet:pb-0 flex flex-row-reverse tablet:flex-row items-center tablet:items-start justify-between">
+		<button id="ham-btn" class="w-8 block tablet:hidden"><img src="/src/asset/icon/ham.webp" alt="menu"></button>
 		<div class="hidden tablet:flex flex-col tablet:flex-row gap-1 tablet:gap-2">
 			<div class="flex flex-col gap-1">
 				<a data-index="1" href="#" class="animate-fade-in-top nav-border">
@@ -113,8 +172,8 @@
 					Streamline should it rundown on dunder anomalies air diarize plan.
 				</div>
 			</div>
-			<a data-index="24" href="#" class="nav-black group flex gap-4 items-center animate-fade-in-text max-w-fit">
-				<h1 class="font-normal text-2xl text-grey">Explore More</h1>
+			<a data-index="24" href="#" class="nav-black group flex gap-1 tablet:gap-4 items-center animate-fade-in-text max-w-fit">
+				<h1 class="font-normal text-lg tablet:text-2xl text-grey">Explore More</h1>
 				<img src="/src/asset/icon/black-arrow.webp" alt="arrow"
 					class="duration-300 group-hover:rotate-90 max-w-7">
 			</a>
@@ -125,7 +184,7 @@
 	<!-- slides -->
 	<div class="slides-wrapper">
 		<section class="section">
-			<img class="h-lvh w-full laptop-sm:h-lvh object-cover" src="/src/asset/img/hero.webp" alt="">
+			<img class="h-[60vh] w-full laptop-sm:h-[80vh] object-cover" src="/src/asset/img/hero.webp" alt="">
 		</section>
 
 		<section class="section">
@@ -133,11 +192,11 @@
 
 				<div class="flex flex-col gap-16 px-7 tablet:px-[50px] py-[100px]">
 					<div class="flex justify-between items-center pb-2 border-b border-light-grey">
-						<div class="flex w-2/5 tablet:w-1/5 justify-between">
+						<div class="flex w-full tablet:w-1/5 justify-between">
 							<h1>01</h1>
 							<h2>About</h2>
 						</div>
-						<h1 class="font-normal text-base text-grey">Hendyscape</h1>
+						<h1 class="font-normal text-base text-grey hidden tablet:block">Hendyscape</h1>
 					</div>
 					<div
 						class="flex flex-col laptop-sm:flex-row items-start laptop-sm:items-stretch justify-between gap-4">
@@ -145,7 +204,7 @@
 							<h1 class="font-normal text-5xl laptop-sm:text-6xl desktop:text-8xl">About Us</h1>
 							<img class="max-w-[240px] hidden laptop-sm:block" src="/src/asset/img/about-2.webp" alt="">
 						</div>
-						<div class="flex flex-col justify-end gap-4 laptop-sm:gap-[80px] desktop:w-2/5 laptop-sm:w-2/4">
+						<div class="flex flex-col justify-end gap-8 laptop-sm:gap-[80px] desktop:w-2/5 laptop-sm:w-2/4">
 							<p>We hurting lunch optimal got the start. Globalize dunder recap focus best left tentative.
 								Needle eat comes finish domains. Your me dangerous indicators enable crack pivot
 								functional
@@ -169,14 +228,14 @@
 					</div>
 				</div>
 
-				<div class="h-dvh bg-[#F5F5F5] flex flex-col items-center justify-center gap-12 px-4">
+				<div class="py-[40px] tablet:h-dvh bg-[#F5F5F5] flex flex-col items-center justify-center gap-12 px-4">
 					<p
 						class="tablet:max-w-[85%] mobile laptop-sm:max-w-[70%] font-normal text-3xl tablet:text-5xl text-grey text-center">
 						Feature centric meat eager invite.
 						Customer social replied welcome relaxation exploratory now view third. Hurting contribution us
 						due
 						version got.</p>
-					<div class="flex gap-3">
+					<div class="flex flex-col tablet:flex-row gap-3">
 						<div class="about-card">
 							<img src="/src/asset/img/about-3.webp" alt="">
 							<h1>Designing</h1>
@@ -553,7 +612,7 @@
 				</div>
 			</div>
 		</section>
-	</div>
+	</div>	
 	<!-- slides -->
 
 </body>

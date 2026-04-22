@@ -247,13 +247,39 @@ function initFooterAnimations() {
 
 // ============================================================
 // INIT
-// ============================================================
 
-initNavAnimationDelay();
-// initScrollPin(); <- Baris ini dan fungsinya sudah dihapus total
-initAboutAnimations();
-initAboutCardAnimations();
-initProjectAnimations();
-initGalleryAnimations();
-initCollapse();
-initFooterAnimations();
+window.addEventListener("DOMContentLoaded", () => {
+	initNavAnimationDelay();
+	initAboutAnimations();
+	initAboutCardAnimations();
+	initProjectAnimations();
+	initGalleryAnimations();
+	initCollapse();
+	initFooterAnimations();
+	initSidebar();
+});
+
+function initSidebar() {
+	const hamBtn = document.getElementById("ham-btn");
+	const sidebar = document.getElementById("sidebar");
+	const overlay = document.getElementById("sidebar-overlay");
+	const closeBtn = document.getElementById("sidebar-close");
+
+	function openSidebar() {
+		sidebar.classList.remove("-translate-y-full");
+		overlay.classList.remove("opacity-0", "pointer-events-none");
+		overlay.classList.add("opacity-100");
+		document.body.style.overflow = "hidden";
+	}
+
+	function closeSidebar() {
+		sidebar.classList.add("-translate-y-full");
+		overlay.classList.add("opacity-0", "pointer-events-none");
+		overlay.classList.remove("opacity-100");
+		document.body.style.overflow = "";
+	}
+
+	hamBtn.addEventListener("click", openSidebar);
+	closeBtn.addEventListener("click", closeSidebar);
+	overlay.addEventListener("click", closeSidebar);
+}
