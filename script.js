@@ -1,4 +1,13 @@
 gsap.registerPlugin(ScrollTrigger);
+gsap.set(".flair", { xPercent: 100, yPercent: 100 });
+
+let xTo = gsap.quickTo(".flair", "x", { duration: 0.6, ease: "power3" }),
+	yTo = gsap.quickTo(".flair", "y", { duration: 0.6, ease: "power3" });
+
+window.addEventListener("mousemove", (e) => {
+	xTo(e.clientX);
+	yTo(e.clientY);
+});
 
 // ============================================================
 // UTILITIES
@@ -6,9 +15,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Animate elements from a starting state on scroll.
- * @param {Element|NodeList|Array} els
- * @param {Object} fromVars   - GSAP `from` overrides
- * @param {string} start      - ScrollTrigger start value (default "top 85%")
  */
 function animateFrom(els, fromVars = {}, start = "top 85%") {
 	if (!els) return;
@@ -16,20 +22,21 @@ function animateFrom(els, fromVars = {}, start = "top 85%") {
 	if (!targets.length) return;
 
 	gsap.from(targets, {
-		scrollTrigger: { trigger: targets[0], start },
+		scrollTrigger: {
+			trigger: targets[0],
+			start,
+			toggleActions: "play none none none",
+		},
 		opacity: 0,
 		duration: 0.8,
 		ease: "power2.out",
-		clearProps: "opacity",
+		clearProps: "all",
 		...fromVars,
 	});
 }
 
 /**
  * Split element text into per-word spans and animate them in on scroll.
- * @param {Element} el
- * @param {Object} fromVars
- * @param {string} start
  */
 function animateTextByWord(el, fromVars = {}, start = "top 85%") {
 	if (!el) return;
@@ -41,49 +48,24 @@ function animateTextByWord(el, fromVars = {}, start = "top 85%") {
 		.join(" ");
 
 	gsap.from(el.querySelectorAll(".word"), {
-		scrollTrigger: { trigger: el, start },
+		scrollTrigger: { trigger: el, start, toggleActions: "play none none none" },
 		opacity: 0,
-		y: 20,
+		y: 40, // Fade in dari bawah
 		stagger: 0.04,
-		duration: 0.5,
+		duration: 0.6,
 		ease: "power2.out",
-		clearProps: "opacity",
+		clearProps: "all",
 		...fromVars,
 	});
 }
 
 // ============================================================
-// NAV — animation delay per item
+// NAV
 // ============================================================
 
 function initNavAnimationDelay() {
 	document.querySelectorAll("[data-index]").forEach((el) => {
 		el.style.animationDelay = `${0.1 + Number(el.dataset.index) * 0.05}s`;
-	});
-}
-
-// ============================================================
-// SCROLL PIN — stacked section scale-out effect
-// ============================================================
-
-function initScrollPin() {
-	const panels = gsap.utils.toArray(".section");
-	panels.pop(); // skip last section (Project & Footer)
-
-	panels.forEach((panel) => {
-		const tl = gsap.timeline({
-			scrollTrigger: {
-				trigger: panel,
-				start: "bottom bottom", // Pin persis saat user nyentuh bagian paling bawah section
-				end: "bottom top", // Pin dilepas setelah user scroll sejauh 1 tinggi layar
-				pin: true,
-				pinSpacing: false, // Biarkan section berikutnya naik menutupi
-				scrub: true,
-			},
-		});
-
-		// Animasi mengecil dan pudar ke belakang
-		tl.fromTo(panel, { scale: 1, opacity: 1 }, { scale: 0.7, opacity: 0.5, duration: 0.9 }).to(panel, { opacity: 0, duration: 0.1 });
 	});
 }
 
@@ -101,14 +83,11 @@ function initAboutAnimations() {
 	animateFrom(section.querySelector('img[src*="about-1"]'), { x: 60, duration: 1 }, "top 75%");
 	animateFrom(section.querySelector('a[href="#"]'), { y: 20, duration: 0.6 }, "top 90%");
 
-	section.querySelectorAll("p").forEach((p) => animateTextByWord(p, {}, "top 85%"));
+	section.querySelectorAll("p").forEach((p) => animateTextByWord(p, { y: 40 }, "top 85%"));
 	document.querySelectorAll(".descri-text").forEach((el) => animateTextByWord(el, { duration: 0.5, y: 30 }, "top 90%"));
 	document.querySelectorAll(".disclaimer-text").forEach((el) => animateTextByWord(el, { duration: 1, y: 30 }, "top 90%"));
 }
 
-/**
- * Animate about-cards after the quote paragraph finishes its word animation.
- */
 function initAboutCardAnimations() {
 	const quoteP = document.querySelector(".h-dvh p");
 	const cards = document.querySelectorAll(".about-card");
@@ -119,11 +98,11 @@ function initAboutCardAnimations() {
 	gsap.from(cards, {
 		scrollTrigger: { trigger: quoteP, start: "top 85%" },
 		opacity: 0,
-		y: 30,
+		y: 50, // Muncul dari bawah
 		stagger: 0.15,
 		duration: 0.7,
 		ease: "power2.out",
-		clearProps: "opacity",
+		clearProps: "all",
 		delay,
 	});
 }
@@ -138,13 +117,30 @@ function initProjectAnimations() {
 
 	animateFrom(section.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, "top 80%");
 	animateFrom(section.querySelector("h1.text-8xl"), { x: -60, duration: 1 }, "top 80%");
-	animateFrom(section.querySelectorAll(".collapse-item"), { y: 40, duration: 0.7, stagger: 0.12 }, "top 75%");
+
+	// Animasi item collapse muncul dari bawah
+	section.querySelectorAll(".collapse-item").forEach((item, i) => {
+		gsap.from(item, {
+			scrollTrigger: {
+				trigger: item,
+				start: "top 85%",
+				toggleActions: "play none none none",
+			},
+			opacity: 0,
+			y: 50, // Dari bawah
+			duration: 0.8,
+			ease: "power2.out",
+			clearProps: "all",
+			delay: i * 0.1,
+		});
+	});
+
 	animateFrom(section.querySelector(".header"), { y: -20, duration: 0.6 }, "top 80%");
 	animateFrom(section.querySelector(".heading"), { x: -60, duration: 1 }, "top 80%");
 }
 
 // ============================================================
-// GALLERY — fade in each image on scroll
+// GALLERY SECTION
 // ============================================================
 
 function initGalleryAnimations() {
@@ -158,13 +154,13 @@ function initGalleryAnimations() {
 			y: 40,
 			duration: 0.6,
 			ease: "power2.out",
-			clearProps: "opacity",
+			clearProps: "all",
 		});
 	});
 }
 
 // ============================================================
-// COLLAPSE — accordion open/close per item (vanilla JS)
+// COLLAPSE LOGIC
 // ============================================================
 
 function initCollapse() {
@@ -173,7 +169,6 @@ function initCollapse() {
 		const body = item.querySelector(".collapse-body");
 		const imgs = body.querySelectorAll("img");
 
-		// Initial state
 		body.style.height = "0px";
 		body.style.overflow = "hidden";
 		body.style.transition = "height 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
@@ -186,17 +181,12 @@ function initCollapse() {
 
 		trigger.addEventListener("click", () => {
 			if (!isOpen) {
-				// Open: measure full height then animate to it
 				body.style.height = "auto";
 				const fullHeight = body.scrollHeight + "px";
 				body.style.height = "0px";
-
-				// Force reflow so transition fires
 				body.offsetHeight;
-
 				body.style.height = fullHeight;
 
-				// Fade in images after body starts opening
 				setTimeout(() => {
 					imgs.forEach((img, i) => {
 						setTimeout(() => {
@@ -205,7 +195,6 @@ function initCollapse() {
 					});
 				}, 300);
 
-				// After transition ends, set height to auto so it adapts to content
 				body.addEventListener(
 					"transitionend",
 					() => {
@@ -217,14 +206,12 @@ function initCollapse() {
 					{ once: true },
 				);
 			} else {
-				// Close: lock height back to px value, then animate to 0
 				body.style.height = body.scrollHeight + "px";
-				body.offsetHeight; // force reflow
+				body.offsetHeight;
 
 				imgs.forEach((img) => {
 					img.style.opacity = "0";
 				});
-
 				body.style.height = "0px";
 
 				body.addEventListener(
@@ -235,7 +222,6 @@ function initCollapse() {
 					{ once: true },
 				);
 			}
-
 			isOpen = !isOpen;
 		});
 	});
@@ -264,7 +250,7 @@ function initFooterAnimations() {
 // ============================================================
 
 initNavAnimationDelay();
-initScrollPin();
+// initScrollPin(); <- Baris ini dan fungsinya sudah dihapus total
 initAboutAnimations();
 initAboutCardAnimations();
 initProjectAnimations();
