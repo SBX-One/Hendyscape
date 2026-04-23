@@ -33,6 +33,8 @@ function initScrollFade() {
 	const allClasses = Object.keys(FADE_CONFIG);
 	allClasses.forEach((fadeClass) => {
 		document.querySelectorAll(`.${fadeClass}`).forEach((el) => {
+			// Skip for sticky section elements on desktop to avoid conflict
+			if (window.innerWidth >= 768 && el.closest("#about-card-section")) return;
 			let delay = 0;
 			for (const [delayClass, delayVal] of Object.entries(DELAY_MAP)) {
 				if (el.classList.contains(delayClass)) {
@@ -146,68 +148,81 @@ function initAboutCardScrollReveal() {
 	const cards = [...section.querySelectorAll(".about-card")];
 	if (!quoteP || !cards.length) return;
 
-	// --- Wrap quote words, start very dim (gray look) ---
-	const rawWords = quoteP.innerText.trim().split(/\s+/);
-	quoteP.innerHTML = rawWords.map((w) => `<span class="word-wrap" style="display:inline-block; margin-right: 0.25em;"><span class="word-q" style="display:inline-block; color: #000;">${w}</span></span>`).join("");
-	const wordEls = [...quoteP.querySelectorAll(".word-q")];
-	
-	// Set initial states immediately
-	gsap.set(wordEls, { opacity: 0.2 });
-	cards.forEach((card) => {
-		const img = card.querySelector("img");
-		const label = card.querySelector("h1");
-		if (img) gsap.set(img, { opacity: 0.3, filter: "blur(15px)", scale: 0.9 });
-		if (label) gsap.set(label, { opacity: 0, y: 20 });
-	});
+	let mm = gsap.matchMedia();
 
-	// --- GSAP scrub timeline with PIN ---
-	const tl = gsap.timeline({
-		scrollTrigger: {
-			trigger: section,
-			start: "top top", // Stick exactly when top of section hits top of viewport
-			end: "+=1500",    // Fixed scroll distance for stability
-			pin: true,
-			scrub: 1,
-			invalidateOnRefresh: true,
-			pinSpacing: true,
-			pinType: "transform",
-		},
-	});
+	// Only run on desktop/tablet (min-width: 768px)
+	mm.add("(min-width: 768px)", () => {
+		// --- Wrap quote words, start very dim (gray look) ---
+		const rawWords = quoteP.innerText.trim().split(/\s+/);
+		quoteP.innerHTML = rawWords.map((w) => `<span class="word-wrap" style="display:inline-block; margin-right: 0.25em;"><span class="word-q" style="display:inline-block; color: #000;">${w}</span></span>`).join("");
+		const wordEls = [...quoteP.querySelectorAll(".word-q")];
+		
+		// Set initial states
+		gsap.set(wordEls, { opacity: 0.2 });
+		cards.forEach((card) => {
+			const img = card.querySelector("img");
+			const label = card.querySelector("h1");
+			if (img) gsap.set(img, { opacity: 0.3, filter: "blur(15px)", scale: 0.9 });
+			if (label) gsap.set(label, { opacity: 0, y: 20 });
+		});
 
-	// 1. Animate Text (0% to 40%)
-	const textPartEnd = 0.4;
-	wordEls.forEach((w, i) => {
-		tl.to(w, { 
-			opacity: 1, 
-			duration: 0.1, 
-			ease: "none" 
-		}, (i / wordEls.length) * textPartEnd);
-	});
+		// --- GSAP scrub timeline with PIN ---
+		const tl = gsap.timeline({
+			scrollTrigger: {
+				trigger: section,
+				start: "top top",
+				end: "+=1500",
+				pin: true,
+				scrub: 1,
+				invalidateOnRefresh: true,
+				pinSpacing: true,
+				pinType: "transform",
+			},
+		});
 
-	// 2. Animate Cards (40% to 100%)
-	const cardStep = (1 - textPartEnd) / cards.length;
-	cards.forEach((card, ci) => {
-		const img = card.querySelector("img");
-		const label = card.querySelector("h1");
-		const startAt = textPartEnd + ci * cardStep;
+		// 1. Animate Text (0% to 40%)
+		const textPartEnd = 0.4;
+		wordEls.forEach((w, i) => {
+			tl.to(w, { 
+				opacity: 1, 
+				duration: 0.1, 
+				ease: "none" 
+			}, (i / wordEls.length) * textPartEnd);
+		});
 
-		if (img) {
-			tl.to(img, {
-				opacity: 1,
-				filter: "blur(0px)",
-				scale: 1,
-				duration: cardStep,
-				ease: "power2.inOut"
-			}, startAt);
-		}
-		if (label) {
-			tl.to(label, {
-				opacity: 1,
-				y: 0,
-				duration: cardStep * 0.5,
-				ease: "power2.out"
-			}, startAt + cardStep * 0.2);
-		}
+		// 2. Animate Cards (40% to 100%)
+		const cardStep = (1 - textPartEnd) / cards.length;
+		cards.forEach((card, ci) => {
+			const img = card.querySelector("img");
+			const label = card.querySelector("h1");
+			const startAt = textPartEnd + ci * cardStep;
+
+			if (img) {
+				tl.to(img, {
+					opacity: 1,
+					filter: "blur(0px)",
+					scale: 1,
+					duration: cardStep,
+					ease: "power2.inOut"
+				}, startAt);
+			}
+			if (label) {
+				tl.to(label, {
+					opacity: 1,
+					y: 0,
+					duration: cardStep * 0.5,
+					ease: "power2.out"
+				}, startAt + cardStep * 0.2);
+			}
+		});
+
+		return () => {
+			// Cleanup if screen resized back to mobile
+			gsap.set(wordEls, { clearProps: "all" });
+			cards.forEach((card) => {
+				gsap.set([card.querySelector("img"), card.querySelector("h1")], { clearProps: "all" });
+			});
+		};
 	});
 }
 
@@ -216,7 +231,7 @@ function initAboutCardScrollReveal() {
 // ============================================================
 
 function initProjectAnimations() {
-	const section = document.querySelectorAll(".slides-wrapper .section")[3];
+	const section = document.querySelectorAll(".slides-wrapper .section")[2];
 	if (!section) return;
 
 	animateFrom(section.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, "top 80%");
@@ -436,16 +451,23 @@ function initSidebar() {
 // ============================================================
 
 window.addEventListener("DOMContentLoaded", () => {
-	initScrollFade();
 	initNavAnimationDelay();
 	initAboutAnimations();
+	
+	// Initialize in DOM order for correct ScrollTrigger calculations
+	// The Pinning section must be initialized before elements below it
+	initAboutCardScrollReveal();
+
 	initProjectAnimations();
 	initGalleryAnimations();
 	initCollapse();
 	initFooterAnimations();
+
+	// Initialize general fades after pinning to ensure correct positions
+	initScrollFade();
+	
 	initSidebar();
 
-	// Initialize sticky reveal last so it has correct positions
-	initAboutCardScrollReveal();
+	// Final refresh to lock in all positions
 	ScrollTrigger.refresh();
 });

@@ -280,6 +280,9 @@
   .h-screen {
     height: 100vh;
   }
+  .min-h-screen {
+    min-height: 100vh;
+  }
   .w-4 {
     width: calc(var(--spacing) * 4);
   }
@@ -478,6 +481,12 @@
   }
   .py-\[40px\] {
     padding-block: 40px;
+  }
+  .py-\[50px\] {
+    padding-block: 50px;
+  }
+  .py-\[80px\] {
+    padding-block: 80px;
   }
   .py-\[100px\] {
     padding-block: 100px;
@@ -700,9 +709,24 @@
       gap: calc(var(--spacing) * 5);
     }
   }
+  .tablet\:gap-12 {
+    @media (width >= 768px) {
+      gap: calc(var(--spacing) * 12);
+    }
+  }
   .tablet\:px-\[50px\] {
     @media (width >= 768px) {
       padding-inline: 50px;
+    }
+  }
+  .tablet\:py-0 {
+    @media (width >= 768px) {
+      padding-block: calc(var(--spacing) * 0);
+    }
+  }
+  .tablet\:py-\[40px\] {
+    @media (width >= 768px) {
+      padding-block: 40px;
     }
   }
   .tablet\:pt-\[150px\] {
