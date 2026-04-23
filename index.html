@@ -9,7 +9,23 @@
 	<link rel="stylesheet" href="/src/css/output.css" />
 </head>
 
-<body class="bg-white overflow-x-hidden">
+<body class="bg-white overflow-x-hidden is-loading">
+	<!-- PRELOADER -->
+	<div id="preloader" class="fixed inset-0 z-[999] bg-white flex flex-col items-center justify-center">
+		<div class="preloader-content flex flex-col items-center gap-8">
+			<div class="preloader-logo flex gap-2 items-center">
+				<img src="/src/asset/icon/logo.webp" alt="logo" class="w-8 h-8">
+				<span class="font-normal text-xl text-grey">Hendyscape</span>
+			</div>
+			<div class="preloader-bar-wrapper">
+				<div id="preloader-bar" class="preloader-bar"></div>
+			</div>
+			<div class="preloader-info">
+				<span id="preloader-percent" class="preloader-percent">0%</span>
+			</div>
+		</div>
+	</div>
+	<!-- PRELOADER END -->
 	<div class="flair flair--3 hidden laptop-sm:block"></div>
 	<!-- navbar -->
 	<!-- sidebar overlay -->
@@ -148,7 +164,7 @@
 	<!-- navbar -->
 
 	<!-- hero -->
-	<section class="px-7 laptop-sm:px-[50px] pb-12 flex flex-col">
+	<section id="hero-section" class="px-7 laptop-sm:px-[50px] pb-12 flex flex-col">
 		<div class="flex header-text">
 			<span data-index="1" class="animate-fade-in-text">H</span>
 			<span data-index="2" class="animate-fade-in-text">e</span>

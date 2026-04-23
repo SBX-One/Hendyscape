@@ -115,6 +115,139 @@ function initNavAnimationDelay() {
 }
 
 // ============================================================
+// HERO ENTRANCE ANIMATION (after preloader)
+// ============================================================
+
+function initHeroEntrance() {
+	// Remove loading class to allow CSS animations on rest of page
+	document.body.classList.remove("is-loading");
+
+	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+	// --- Navbar ---
+	const logo = document.querySelector('[data-index="1"].flex.gap-2');
+	const navLinks = document.querySelectorAll('.animate-fade-in-top.nav-border');
+	const hamBtn = document.getElementById('ham-btn');
+
+	// --- Hero ---
+	const headerLetters = document.querySelectorAll('.header-text .animate-fade-in-text');
+	const descriText = document.querySelector('.descri-text');
+	const disclaimerText = document.querySelector('.disclaimer-text');
+	const exploreBtn = document.querySelector('a.nav-black.animate-fade-in-text');
+	const heroImg = document.querySelector('.slides-wrapper .section:first-child img');
+
+	// Set initial states with GSAP (override CSS)
+	if (logo) gsap.set(logo, { opacity: 0, y: -30 });
+	if (navLinks.length) gsap.set(navLinks, { opacity: 0, y: -30 });
+	if (hamBtn) gsap.set(hamBtn, { opacity: 0, y: -20 });
+	if (headerLetters.length) gsap.set(headerLetters, { opacity: 0, y: 50 });
+	if (descriText) gsap.set(descriText, { opacity: 0, y: 30 });
+	if (disclaimerText) gsap.set(disclaimerText, { opacity: 0, y: 20 });
+	if (exploreBtn) gsap.set(exploreBtn, { opacity: 0, y: 25 });
+	if (heroImg) gsap.set(heroImg, { opacity: 0, y: 80, scale: 1.05 });
+
+	// --- Build timeline ---
+
+	// 1. Logo drops in
+	if (logo) {
+		tl.to(logo, { opacity: 1, y: 0, duration: 0.6 }, 0);
+	}
+
+	// 2. Ham button (mobile)
+	if (hamBtn) {
+		tl.to(hamBtn, { opacity: 1, y: 0, duration: 0.5 }, 0.1);
+	}
+
+	// 3. Nav links stagger in
+	if (navLinks.length) {
+		tl.to(navLinks, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, 0.15);
+	}
+
+	// 4. Header letters cascade up
+	if (headerLetters.length) {
+		tl.to(headerLetters, {
+			opacity: 1,
+			y: 0,
+			duration: 0.7,
+			stagger: 0.04,
+			ease: "power4.out"
+		}, 0.25);
+	}
+
+	// 5. Description text
+	if (descriText) {
+		tl.to(descriText, { opacity: 1, y: 0, duration: 0.8 }, 0.7);
+	}
+
+	// 6. Disclaimer text
+	if (disclaimerText) {
+		tl.to(disclaimerText, { opacity: 1, y: 0, duration: 0.7 }, 0.85);
+	}
+
+	// 7. Explore More button
+	if (exploreBtn) {
+		tl.to(exploreBtn, { opacity: 1, y: 0, duration: 0.6 }, 0.9);
+	}
+
+	// 8. Hero image — dramatic reveal
+	if (heroImg) {
+		tl.to(heroImg, {
+			opacity: 1,
+			y: 0,
+			scale: 1,
+			duration: 0.3,
+			ease: "power2.out"
+		}, 0.6);
+	}
+
+	// Clear inline styles after all animations complete
+	tl.eventCallback("onComplete", () => {
+		const allTargets = [logo, hamBtn, descriText, disclaimerText, exploreBtn, heroImg];
+		allTargets.forEach(el => { if (el) gsap.set(el, { clearProps: "all" }); });
+		if (navLinks.length) gsap.set(navLinks, { clearProps: "all" });
+		if (headerLetters.length) gsap.set(headerLetters, { clearProps: "all" });
+	});
+}
+
+// ============================================================
+// HERO SCROLL EFFECT
+// ============================================================
+
+function initHeroScrollEffect() {
+	const heroSection = document.getElementById("hero-section");
+	const heroImg = document.querySelector(".slides-wrapper .section:first-child img");
+
+	if (!heroSection || !heroImg) return;
+
+	// Fade out text section as we scroll down
+	gsap.to(heroSection, {
+		scrollTrigger: {
+			trigger: heroSection,
+			start: "top top",
+			end: "bottom top",
+			scrub: true,
+		},
+		opacity: 0,
+		scale: 0.95,
+		y: -50,
+		ease: "none",
+	});
+
+	// Scale up image "to the top" as it comes into view
+	gsap.to(heroImg, {
+		scrollTrigger: {
+			trigger: ".slides-wrapper .section:first-child",
+			start: "top bottom",
+			end: "center center",
+			scrub: true,
+		},
+		scale: 1.2,
+		y: -20,
+		ease: "none",
+	});
+}
+
+// ============================================================
 // ABOUT SECTION
 // ============================================================
 
@@ -462,11 +595,127 @@ function initSidebar() {
 }
 
 // ============================================================
-// INIT — about card scroll FIRST so DOM is restructured
-//         before other ScrollTriggers are calculated
+// PRELOADER
 // ============================================================
 
-window.addEventListener("DOMContentLoaded", () => {
+function preloadAssets() {
+	return new Promise((resolve) => {
+		const preloader = document.getElementById("preloader");
+		const bar = document.getElementById("preloader-bar");
+		const percentEl = document.getElementById("preloader-percent");
+
+		// Lock scroll during loading
+		document.body.style.overflow = "hidden";
+
+		// Collect all image sources from the page
+		const imgEls = document.querySelectorAll("img");
+		const sources = new Set();
+		imgEls.forEach((img) => {
+			if (img.src && !img.src.startsWith("data:")) sources.add(img.src);
+		});
+
+		// Also collect background images from CSS
+		document.querySelectorAll("*").forEach((el) => {
+			const bg = getComputedStyle(el).backgroundImage;
+			if (bg && bg !== "none") {
+				const match = bg.match(/url\(["']?(.+?)["']?\)/);
+				if (match && match[1] && !match[1].startsWith("data:")) {
+					sources.add(match[1]);
+				}
+			}
+		});
+
+		const total = sources.size;
+		if (total === 0) {
+			finishPreloader(preloader, resolve);
+			return;
+		}
+
+		let loaded = 0;
+		let displayedPercent = 0;
+		let animFrame;
+
+		// Smoothly animate the displayed percentage
+		function animatePercent() {
+			const targetPercent = Math.round((loaded / total) * 100);
+			if (displayedPercent < targetPercent) {
+				displayedPercent += Math.max(1, Math.ceil((targetPercent - displayedPercent) * 0.15));
+				if (displayedPercent > targetPercent) displayedPercent = targetPercent;
+			}
+			bar.style.width = displayedPercent + "%";
+			percentEl.textContent = displayedPercent + "%";
+
+			if (displayedPercent < 100) {
+				animFrame = requestAnimationFrame(animatePercent);
+			} else {
+				cancelAnimationFrame(animFrame);
+				// Small delay for the bar to visually reach 100%
+				setTimeout(() => finishPreloader(preloader, resolve), 400);
+			}
+		}
+
+		function onAssetLoad() {
+			loaded++;
+			if (loaded === 1) animatePercent(); // Start smooth animation on first load
+			if (loaded >= total && displayedPercent < 100) {
+				// Force reach 100 if all loaded but animation hasn't caught up
+				displayedPercent = 99; // Let animation tick to 100
+			}
+		}
+
+		sources.forEach((src) => {
+			const img = new Image();
+			img.onload = onAssetLoad;
+			img.onerror = onAssetLoad; // Count errors too so we don't hang
+			img.src = src;
+		});
+
+		// Start the animation loop
+		animatePercent();
+
+		// Safety timeout: reveal after 8 seconds even if some assets fail
+		setTimeout(() => {
+			if (displayedPercent < 100) {
+				displayedPercent = 100;
+				bar.style.width = "100%";
+				percentEl.textContent = "100%";
+				setTimeout(() => finishPreloader(preloader, resolve), 300);
+			}
+		}, 8000);
+	});
+}
+
+function finishPreloader(preloader, resolve) {
+	let resolved = false;
+	preloader.classList.add("loaded");
+	document.body.style.overflow = "";
+
+	function done() {
+		if (resolved) return;
+		resolved = true;
+		if (preloader.parentNode) preloader.remove();
+		resolve();
+	}
+
+	// Remove preloader from DOM after transition
+	preloader.addEventListener("transitionend", done, { once: true });
+
+	// Fallback if transitionend doesn't fire
+	setTimeout(done, 1000);
+}
+
+// ============================================================
+// INIT — preload assets first, then fire all animations
+// ============================================================
+
+window.addEventListener("DOMContentLoaded", async () => {
+	// Wait for all assets to load
+	await preloadAssets();
+
+	// Play hero entrance animation first
+	initHeroEntrance();
+	initHeroScrollEffect();
+
 	initNavAnimationDelay();
 	initAboutAnimations();
 	
@@ -487,3 +736,4 @@ window.addEventListener("DOMContentLoaded", () => {
 	// Final refresh to lock in all positions
 	ScrollTrigger.refresh();
 });
+
