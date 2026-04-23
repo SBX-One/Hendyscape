@@ -176,7 +176,7 @@ function initAboutCardScrollReveal() {
 				scrub: 1,
 				invalidateOnRefresh: true,
 				pinSpacing: true,
-				pinType: "transform",
+				anticipatePin: 1
 			},
 		});
 
