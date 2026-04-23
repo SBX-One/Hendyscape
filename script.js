@@ -12,29 +12,6 @@ window.addEventListener("mousemove", (e) => {
 // ============================================================
 // SCROLL FADE-IN SYSTEM
 // ============================================================
-//
-// Tambahkan class berikut ke elemen HTML mana saja,
-// animasi akan otomatis jalan saat elemen masuk viewport.
-//
-// CLASS YANG TERSEDIA:
-//   fade-up        → muncul dari bawah ke atas       (default)
-//   fade-down      → muncul dari atas ke bawah
-//   fade-left      → muncul dari kanan ke kiri
-//   fade-right     → muncul dari kiri ke kanan
-//   fade-in        → muncul di tempat (opacity saja)
-//
-// MODIFIER OPSIONAL (bisa dikombinasikan):
-//   fade-delay-1   → delay 100ms
-//   fade-delay-2   → delay 200ms
-//   fade-delay-3   → delay 300ms
-//   fade-delay-4   → delay 400ms
-//   fade-delay-5   → delay 500ms
-//
-// CONTOH PEMAKAIAN DI HTML:
-//   <h1 class="fade-right">About Us</h1>
-//   <img class="fade-up fade-delay-2" src="..." />
-//   <p class="fade-left fade-delay-1">Lorem ipsum...</p>
-// ============================================================
 
 const FADE_CONFIG = {
 	"fade-up": { y: 50, x: 0 },
@@ -54,10 +31,8 @@ const DELAY_MAP = {
 
 function initScrollFade() {
 	const allClasses = Object.keys(FADE_CONFIG);
-
 	allClasses.forEach((fadeClass) => {
 		document.querySelectorAll(`.${fadeClass}`).forEach((el) => {
-			// Cari delay modifier kalau ada
 			let delay = 0;
 			for (const [delayClass, delayVal] of Object.entries(DELAY_MAP)) {
 				if (el.classList.contains(delayClass)) {
@@ -65,9 +40,7 @@ function initScrollFade() {
 					break;
 				}
 			}
-
 			const { x, y } = FADE_CONFIG[fadeClass];
-
 			gsap.from(el, {
 				scrollTrigger: {
 					trigger: el,
@@ -111,7 +84,6 @@ function animateFrom(els, fromVars = {}, start = "top 85%") {
 
 function animateTextByWord(el, fromVars = {}, start = "top 85%") {
 	if (!el) return;
-
 	el.innerHTML = el.innerText
 		.trim()
 		.split(/\s+/)
@@ -154,27 +126,88 @@ function initAboutAnimations() {
 	animateFrom(section.querySelector('img[src*="about-1"]'), { x: 60, duration: 1 }, "top 75%");
 	animateFrom(section.querySelector('a[href="#"]'), { y: 20, duration: 0.6 }, "top 90%");
 
-	section.querySelectorAll("p").forEach((p) => animateTextByWord(p, { y: 40 }, "top 85%"));
+	section.querySelectorAll("p").forEach((p) => {
+		if (p.closest("#about-card-section")) return;
+		animateTextByWord(p, { y: 40 }, "top 85%");
+	});
 	document.querySelectorAll(".descri-text").forEach((el) => animateTextByWord(el, { duration: 0.5, y: 30 }, "top 90%"));
 	document.querySelectorAll(".disclaimer-text").forEach((el) => animateTextByWord(el, { duration: 1, y: 30 }, "top 90%"));
 }
 
-function initAboutCardAnimations() {
-	const quoteP = document.querySelector(".h-dvh p");
-	const cards = document.querySelectorAll(".about-card");
+// ============================================================
+// ABOUT CARD — STICKY SCROLL REVEAL
+// ============================================================
+
+function initAboutCardScrollReveal() {
+	const section = document.getElementById("about-card-section");
+	if (!section) return;
+
+	const quoteP = section.querySelector("p");
+	const cards = [...section.querySelectorAll(".about-card")];
 	if (!quoteP || !cards.length) return;
 
-	const delay = quoteP.innerText.trim().split(/\s+/).length * 0.04 + 0.3;
+	// --- Wrap quote words, start very dim (gray look) ---
+	const rawWords = quoteP.innerText.trim().split(/\s+/);
+	quoteP.innerHTML = rawWords.map((w) => `<span class="word-wrap" style="display:inline-block; margin-right: 0.25em;"><span class="word-q" style="display:inline-block; color: #000;">${w}</span></span>`).join("");
+	const wordEls = [...quoteP.querySelectorAll(".word-q")];
+	
+	// Set initial states immediately
+	gsap.set(wordEls, { opacity: 0.2 });
+	cards.forEach((card) => {
+		const img = card.querySelector("img");
+		const label = card.querySelector("h1");
+		if (img) gsap.set(img, { opacity: 0.3, filter: "blur(15px)", scale: 0.9 });
+		if (label) gsap.set(label, { opacity: 0, y: 20 });
+	});
 
-	gsap.from(cards, {
-		scrollTrigger: { trigger: quoteP, start: "top 85%" },
-		opacity: 0,
-		y: 50,
-		stagger: 0.15,
-		duration: 0.7,
-		ease: "power2.out",
-		clearProps: "all",
-		delay,
+	// --- GSAP scrub timeline with PIN ---
+	const tl = gsap.timeline({
+		scrollTrigger: {
+			trigger: section,
+			start: "top top", // Stick exactly when top of section hits top of viewport
+			end: "+=1500",    // Fixed scroll distance for stability
+			pin: true,
+			scrub: 1,
+			invalidateOnRefresh: true,
+			pinSpacing: true,
+			pinType: "transform",
+		},
+	});
+
+	// 1. Animate Text (0% to 40%)
+	const textPartEnd = 0.4;
+	wordEls.forEach((w, i) => {
+		tl.to(w, { 
+			opacity: 1, 
+			duration: 0.1, 
+			ease: "none" 
+		}, (i / wordEls.length) * textPartEnd);
+	});
+
+	// 2. Animate Cards (40% to 100%)
+	const cardStep = (1 - textPartEnd) / cards.length;
+	cards.forEach((card, ci) => {
+		const img = card.querySelector("img");
+		const label = card.querySelector("h1");
+		const startAt = textPartEnd + ci * cardStep;
+
+		if (img) {
+			tl.to(img, {
+				opacity: 1,
+				filter: "blur(0px)",
+				scale: 1,
+				duration: cardStep,
+				ease: "power2.inOut"
+			}, startAt);
+		}
+		if (label) {
+			tl.to(label, {
+				opacity: 1,
+				y: 0,
+				duration: cardStep * 0.5,
+				ease: "power2.out"
+			}, startAt + cardStep * 0.2);
+		}
 	});
 }
 
@@ -183,7 +216,7 @@ function initAboutCardAnimations() {
 // ============================================================
 
 function initProjectAnimations() {
-	const section = document.querySelectorAll(".slides-wrapper .section")[2];
+	const section = document.querySelectorAll(".slides-wrapper .section")[3];
 	if (!section) return;
 
 	animateFrom(section.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, "top 80%");
@@ -266,17 +299,14 @@ function initCollapseHint(item) {
 		start: "top 60%",
 		once: true,
 		onEnter: () => {
-			// Buka setelah 600ms (biar fade-in item-nya kelar dulu)
 			setTimeout(() => {
 				openCollapse(body, imgs);
-
-				// Tutup lagi setelah 1.8s
 				setTimeout(() => {
 					closeCollapse(body, imgs);
 					body.addEventListener(
 						"transitionend",
 						() => {
-							ScrollTrigger.refresh();
+							// No refresh needed here as it returns to original height
 						},
 						{ once: true },
 					);
@@ -300,7 +330,6 @@ function initCollapse() {
 			img.style.transition = "opacity 0.5s ease";
 		});
 
-		// Hint hanya untuk collapse pertama
 		if (index === 0) initCollapseHint(item);
 
 		let isOpen = false;
@@ -326,7 +355,7 @@ function initCollapse() {
 					() => {
 						if (isOpen) {
 							body.style.height = "auto";
-							ScrollTrigger.refresh();
+							// Removed refresh to prevent jumps
 						}
 					},
 					{ once: true },
@@ -334,7 +363,6 @@ function initCollapse() {
 			} else {
 				body.style.height = body.scrollHeight + "px";
 				body.offsetHeight;
-
 				imgs.forEach((img) => {
 					img.style.opacity = "0";
 				});
@@ -343,7 +371,9 @@ function initCollapse() {
 				body.addEventListener(
 					"transitionend",
 					() => {
-						if (!isOpen) ScrollTrigger.refresh();
+						if (!isOpen) {
+							// Removed refresh to prevent jumps
+						}
 					},
 					{ once: true },
 				);
@@ -372,20 +402,8 @@ function initFooterAnimations() {
 }
 
 // ============================================================
-// INIT
+// SIDEBAR
 // ============================================================
-
-window.addEventListener("DOMContentLoaded", () => {
-	initScrollFade(); // ← sistem class fade universal, jalankan pertama
-	initNavAnimationDelay();
-	initAboutAnimations();
-	initAboutCardAnimations();
-	initProjectAnimations();
-	initGalleryAnimations();
-	initCollapse();
-	initFooterAnimations();
-	initSidebar();
-});
 
 function initSidebar() {
 	const hamBtn = document.getElementById("ham-btn");
@@ -411,3 +429,23 @@ function initSidebar() {
 	closeBtn.addEventListener("click", closeSidebar);
 	overlay.addEventListener("click", closeSidebar);
 }
+
+// ============================================================
+// INIT — about card scroll FIRST so DOM is restructured
+//         before other ScrollTriggers are calculated
+// ============================================================
+
+window.addEventListener("DOMContentLoaded", () => {
+	initScrollFade();
+	initNavAnimationDelay();
+	initAboutAnimations();
+	initProjectAnimations();
+	initGalleryAnimations();
+	initCollapse();
+	initFooterAnimations();
+	initSidebar();
+
+	// Initialize sticky reveal last so it has correct positions
+	initAboutCardScrollReveal();
+	ScrollTrigger.refresh();
+});

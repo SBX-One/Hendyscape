@@ -102,7 +102,7 @@
 
 * {
 	font-family: "NeueHaas", sans-serif;
-	scroll-behavior: smooth
+	scroll-behavior: smooth;
 }
 
 @layer components {
@@ -136,6 +136,12 @@
 
 	.disclaimer-text span {
 		@apply font-bold text-xl text-grey;
+	}
+
+	h1,
+	h2,
+	p {
+		@apply pointer-events-none;
 	}
 
 	.about-card {
@@ -302,6 +308,6 @@
 		overflow: visible;
 	}
 	.flair {
-		@apply w-3 h-3 rounded-full bg-black fixed z-50
+		@apply w-3 h-3 rounded-full bg-black fixed z-50;
 	}
 }
