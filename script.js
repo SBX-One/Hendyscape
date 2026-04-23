@@ -10,12 +10,86 @@ window.addEventListener("mousemove", (e) => {
 });
 
 // ============================================================
+// SCROLL FADE-IN SYSTEM
+// ============================================================
+//
+// Tambahkan class berikut ke elemen HTML mana saja,
+// animasi akan otomatis jalan saat elemen masuk viewport.
+//
+// CLASS YANG TERSEDIA:
+//   fade-up        → muncul dari bawah ke atas       (default)
+//   fade-down      → muncul dari atas ke bawah
+//   fade-left      → muncul dari kanan ke kiri
+//   fade-right     → muncul dari kiri ke kanan
+//   fade-in        → muncul di tempat (opacity saja)
+//
+// MODIFIER OPSIONAL (bisa dikombinasikan):
+//   fade-delay-1   → delay 100ms
+//   fade-delay-2   → delay 200ms
+//   fade-delay-3   → delay 300ms
+//   fade-delay-4   → delay 400ms
+//   fade-delay-5   → delay 500ms
+//
+// CONTOH PEMAKAIAN DI HTML:
+//   <h1 class="fade-right">About Us</h1>
+//   <img class="fade-up fade-delay-2" src="..." />
+//   <p class="fade-left fade-delay-1">Lorem ipsum...</p>
+// ============================================================
+
+const FADE_CONFIG = {
+	"fade-up": { y: 50, x: 0 },
+	"fade-down": { y: -50, x: 0 },
+	"fade-left": { x: 60, y: 0 },
+	"fade-right": { x: -60, y: 0 },
+	"fade-in": { x: 0, y: 0 },
+};
+
+const DELAY_MAP = {
+	"fade-delay-1": 0.1,
+	"fade-delay-2": 0.2,
+	"fade-delay-3": 0.3,
+	"fade-delay-4": 0.4,
+	"fade-delay-5": 0.5,
+};
+
+function initScrollFade() {
+	const allClasses = Object.keys(FADE_CONFIG);
+
+	allClasses.forEach((fadeClass) => {
+		document.querySelectorAll(`.${fadeClass}`).forEach((el) => {
+			// Cari delay modifier kalau ada
+			let delay = 0;
+			for (const [delayClass, delayVal] of Object.entries(DELAY_MAP)) {
+				if (el.classList.contains(delayClass)) {
+					delay = delayVal;
+					break;
+				}
+			}
+
+			const { x, y } = FADE_CONFIG[fadeClass];
+
+			gsap.from(el, {
+				scrollTrigger: {
+					trigger: el,
+					start: "top 88%",
+					toggleActions: "play none none none",
+				},
+				opacity: 0,
+				x,
+				y,
+				duration: 0.75,
+				delay,
+				ease: "power2.out",
+				clearProps: "all",
+			});
+		});
+	});
+}
+
+// ============================================================
 // UTILITIES
 // ============================================================
 
-/**
- * Animate elements from a starting state on scroll.
- */
 function animateFrom(els, fromVars = {}, start = "top 85%") {
 	if (!els) return;
 	const targets = els instanceof NodeList || Array.isArray(els) ? [...els] : [els];
@@ -35,9 +109,6 @@ function animateFrom(els, fromVars = {}, start = "top 85%") {
 	});
 }
 
-/**
- * Split element text into per-word spans and animate them in on scroll.
- */
 function animateTextByWord(el, fromVars = {}, start = "top 85%") {
 	if (!el) return;
 
@@ -50,7 +121,7 @@ function animateTextByWord(el, fromVars = {}, start = "top 85%") {
 	gsap.from(el.querySelectorAll(".word"), {
 		scrollTrigger: { trigger: el, start, toggleActions: "play none none none" },
 		opacity: 0,
-		y: 40, // Fade in dari bawah
+		y: 40,
 		stagger: 0.04,
 		duration: 0.6,
 		ease: "power2.out",
@@ -98,7 +169,7 @@ function initAboutCardAnimations() {
 	gsap.from(cards, {
 		scrollTrigger: { trigger: quoteP, start: "top 85%" },
 		opacity: 0,
-		y: 50, // Muncul dari bawah
+		y: 50,
 		stagger: 0.15,
 		duration: 0.7,
 		ease: "power2.out",
@@ -118,7 +189,6 @@ function initProjectAnimations() {
 	animateFrom(section.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, "top 80%");
 	animateFrom(section.querySelector("h1.text-8xl"), { x: -60, duration: 1 }, "top 80%");
 
-	// Animasi item collapse muncul dari bawah
 	section.querySelectorAll(".collapse-item").forEach((item, i) => {
 		gsap.from(item, {
 			scrollTrigger: {
@@ -127,7 +197,7 @@ function initProjectAnimations() {
 				toggleActions: "play none none none",
 			},
 			opacity: 0,
-			y: 50, // Dari bawah
+			y: 50,
 			duration: 0.8,
 			ease: "power2.out",
 			clearProps: "all",
@@ -163,8 +233,61 @@ function initGalleryAnimations() {
 // COLLAPSE LOGIC
 // ============================================================
 
+function openCollapse(body, imgs) {
+	body.style.height = "auto";
+	const fullHeight = body.scrollHeight + "px";
+	body.style.height = "0px";
+	body.offsetHeight;
+	body.style.height = fullHeight;
+	setTimeout(() => {
+		imgs.forEach((img, i) => {
+			setTimeout(() => {
+				img.style.opacity = "1";
+			}, i * 50);
+		});
+	}, 300);
+}
+
+function closeCollapse(body, imgs) {
+	body.style.height = body.scrollHeight + "px";
+	body.offsetHeight;
+	imgs.forEach((img) => {
+		img.style.opacity = "0";
+	});
+	body.style.height = "0px";
+}
+
+function initCollapseHint(item) {
+	const body = item.querySelector(".collapse-body");
+	const imgs = body.querySelectorAll("img");
+
+	ScrollTrigger.create({
+		trigger: item,
+		start: "top 60%",
+		once: true,
+		onEnter: () => {
+			// Buka setelah 600ms (biar fade-in item-nya kelar dulu)
+			setTimeout(() => {
+				openCollapse(body, imgs);
+
+				// Tutup lagi setelah 1.8s
+				setTimeout(() => {
+					closeCollapse(body, imgs);
+					body.addEventListener(
+						"transitionend",
+						() => {
+							ScrollTrigger.refresh();
+						},
+						{ once: true },
+					);
+				}, 1800);
+			}, 600);
+		},
+	});
+}
+
 function initCollapse() {
-	document.querySelectorAll(".collapse-item").forEach((item) => {
+	document.querySelectorAll(".collapse-item").forEach((item, index) => {
 		const trigger = item.querySelector(".collapse-trigger");
 		const body = item.querySelector(".collapse-body");
 		const imgs = body.querySelectorAll("img");
@@ -176,6 +299,9 @@ function initCollapse() {
 			img.style.opacity = "0";
 			img.style.transition = "opacity 0.5s ease";
 		});
+
+		// Hint hanya untuk collapse pertama
+		if (index === 0) initCollapseHint(item);
 
 		let isOpen = false;
 
@@ -247,8 +373,10 @@ function initFooterAnimations() {
 
 // ============================================================
 // INIT
+// ============================================================
 
 window.addEventListener("DOMContentLoaded", () => {
+	initScrollFade(); // ← sistem class fade universal, jalankan pertama
 	initNavAnimationDelay();
 	initAboutAnimations();
 	initAboutCardAnimations();
