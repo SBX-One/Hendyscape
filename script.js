@@ -14,10 +14,10 @@ window.addEventListener("mousemove", (e) => {
 // ============================================================
 
 const FADE_CONFIG = {
-	"fade-up": { y: 50, x: 0 },
-	"fade-down": { y: -50, x: 0 },
-	"fade-left": { x: 60, y: 0 },
-	"fade-right": { x: -60, y: 0 },
+	"fade-up": { y: 60, x: 0 },
+	"fade-down": { y: -60, x: 0 },
+	"fade-left": { x: -100, y: 20 },
+	"fade-right": { x: 100, y: 20 },
 	"fade-in": { x: 0, y: 0 },
 };
 
@@ -46,15 +46,15 @@ function initScrollFade() {
 			gsap.from(el, {
 				scrollTrigger: {
 					trigger: el,
-					start: "top 88%",
+					start: "top 92%",
 					toggleActions: "play none none none",
 				},
 				opacity: 0,
 				x,
 				y,
-				duration: 0.75,
+				duration: 1.2,
 				delay,
-				ease: "power2.out",
+				ease: "power3.out",
 				clearProps: "all",
 			});
 		});
@@ -77,8 +77,8 @@ function animateFrom(els, fromVars = {}, start = "top 85%") {
 			toggleActions: "play none none none",
 		},
 		opacity: 0,
-		duration: 0.8,
-		ease: "power2.out",
+		duration: 1.0,
+		ease: "power3.out",
 		clearProps: "all",
 		...fromVars,
 	});
@@ -97,8 +97,8 @@ function animateTextByWord(el, fromVars = {}, start = "top 85%") {
 		opacity: 0,
 		y: 40,
 		stagger: 0.04,
-		duration: 0.6,
-		ease: "power2.out",
+		duration: 0.8,
+		ease: "power3.out",
 		clearProps: "all",
 		...fromVars,
 	});
@@ -123,7 +123,7 @@ function initAboutAnimations() {
 	if (!section) return;
 
 	animateFrom(section.querySelector(".flex.justify-between.items-center"), { y: -20, duration: 0.6 }, "top 80%");
-	animateFrom(section.querySelector("h1"), { x: -60, duration: 1 }, "top 80%");
+	// Rely on fade classes for h1/h2 to avoid conflict
 	animateFrom(section.querySelector('img[src*="about-2"]'), { y: 50, duration: 0.9 }, "top 75%");
 	animateFrom(section.querySelector('img[src*="about-1"]'), { x: 60, duration: 1 }, "top 75%");
 	animateFrom(section.querySelector('a[href="#"]'), { y: 20, duration: 0.6 }, "top 90%");
@@ -185,8 +185,8 @@ function initAboutCardScrollReveal() {
 		wordEls.forEach((w, i) => {
 			tl.to(w, { 
 				opacity: 1, 
-				duration: 0.1, 
-				ease: "none" 
+				duration: 0.4, 
+				ease: "power1.inOut" 
 			}, (i / wordEls.length) * textPartEnd);
 		});
 
@@ -224,6 +224,22 @@ function initAboutCardScrollReveal() {
 			});
 		};
 	});
+
+	// Mobile branch (< 768px)
+	mm.add("(max-width: 767px)", () => {
+		// Word by word reveal for mobile
+		animateTextByWord(quoteP, { y: 30, duration: 1.0, ease: "power3.out" }, "top 92%");
+		
+		// Staggered cards for mobile
+		cards.forEach((card, i) => {
+			animateFrom(card, { y: 60, duration: 1.2, delay: i * 0.15, ease: "power3.out" }, "top 92%");
+		});
+
+		return () => {
+			gsap.set(quoteP, { clearProps: "all" });
+			cards.forEach((card) => gsap.set(card, { clearProps: "all" }));
+		};
+	});
 }
 
 // ============================================================
@@ -254,7 +270,7 @@ function initProjectAnimations() {
 	});
 
 	animateFrom(section.querySelector(".header"), { y: -20, duration: 0.6 }, "top 80%");
-	animateFrom(section.querySelector(".heading"), { x: -60, duration: 1 }, "top 80%");
+	// Rely on fade classes for heading to avoid conflict
 }
 
 // ============================================================
