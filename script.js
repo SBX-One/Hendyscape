@@ -114,13 +114,7 @@ function initNavAnimationDelay() {
 	});
 }
 
-// ============================================================
-// HERO ENTRANCE ANIMATION (after preloader)
-// ============================================================
-
 function initHeroEntrance() {
-	// Remove loading class to allow CSS animations on rest of page
-	document.body.classList.remove("is-loading");
 
 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
@@ -147,9 +141,7 @@ function initHeroEntrance() {
 	if (heroImg) gsap.set(heroImg, { opacity: 0, y: 100, scale: 1.1 });
 
 	// --- Build timeline ---
-	// Add 1.5s delay after preloader slides up for the blank white moment
-	tl.to({}, { duration: 1.5 }); 
-
+	// Start immediately
 	// 1. Logo drops in
 	if (logo) {
 		tl.to(logo, { opacity: 1, y: 0, duration: 0.6 }, 0);
@@ -596,148 +588,14 @@ function initSidebar() {
 	overlay.addEventListener("click", closeSidebar);
 }
 
-// ============================================================
-// PRELOADER
-// ============================================================
 
-function preloadAssets() {
-	return new Promise((resolve) => {
-		const preloader = document.getElementById("preloader");
-		const bar = document.getElementById("preloader-bar");
-		const percentEl = document.getElementById("preloader-percent");
-
-		// Lock scroll during loading
-		document.body.style.overflow = "hidden";
-
-		// Collect all image sources from the page
-		const imgEls = document.querySelectorAll("img");
-		const sources = new Set();
-		imgEls.forEach((img) => {
-			if (img.src && !img.src.startsWith("data:")) sources.add(img.src);
-		});
-
-		// Also collect background images from CSS
-		document.querySelectorAll("*").forEach((el) => {
-			const bg = getComputedStyle(el).backgroundImage;
-			if (bg && bg !== "none") {
-				const match = bg.match(/url\(["']?(.+?)["']?\)/);
-				if (match && match[1] && !match[1].startsWith("data:")) {
-					sources.add(match[1]);
-				}
-			}
-		});
-
-		const total = sources.size;
-		if (total === 0) {
-			finishPreloader(preloader, resolve);
-			return;
-		}
-
-		let loaded = 0;
-		let displayedPercent = 0;
-		let animFrame;
-
-		// Smoothly animate the displayed percentage
-		function animatePercent() {
-			const targetPercent = Math.round((loaded / total) * 100);
-			if (displayedPercent < targetPercent) {
-				displayedPercent += Math.max(1, Math.ceil((targetPercent - displayedPercent) * 0.15));
-				if (displayedPercent > targetPercent) displayedPercent = targetPercent;
-			}
-			bar.style.width = displayedPercent + "%";
-			percentEl.textContent = displayedPercent + "%";
-
-			if (displayedPercent < 100) {
-				animFrame = requestAnimationFrame(animatePercent);
-			} else {
-				cancelAnimationFrame(animFrame);
-				// Small delay for the bar to visually reach 100%
-				setTimeout(() => finishPreloader(preloader, resolve), 400);
-			}
-		}
-
-		function onAssetLoad() {
-			loaded++;
-			if (loaded === 1) animatePercent(); // Start smooth animation on first load
-			if (loaded >= total && displayedPercent < 100) {
-				// Force reach 100 if all loaded but animation hasn't caught up
-				displayedPercent = 99; // Let animation tick to 100
-			}
-		}
-
-		sources.forEach((src) => {
-			const img = new Image();
-			img.onload = onAssetLoad;
-			img.onerror = onAssetLoad; // Count errors too so we don't hang
-			img.src = src;
-		});
-
-		// Start the animation loop
-		animatePercent();
-
-		// Safety timeout: reveal after 8 seconds even if some assets fail
-		setTimeout(() => {
-			if (displayedPercent < 100) {
-				displayedPercent = 100;
-				bar.style.width = "100%";
-				percentEl.textContent = "100%";
-				setTimeout(() => finishPreloader(preloader, resolve), 300);
-			}
-		}, 8000);
-	});
-}
-
-function finishPreloader(preloader, resolve) {
-	let resolved = false;
-	
-	// Add delay before starting the exit animation
-	setTimeout(() => {
-		preloader.classList.add("loaded");
-		document.body.style.overflow = "";
-
-		function done() {
-			if (resolved) return;
-			resolved = true;
-			if (preloader.parentNode) preloader.remove();
-			resolve();
-		}
-
-		// Remove preloader from DOM after transition
-		preloader.addEventListener("transitionend", done, { once: true });
-
-		// Fallback if transitionend doesn't fire
-		setTimeout(done, 2000); 
-	}, 1500); // 1.5s delay
-}
 
 // ============================================================
 // INIT — preload assets first, then fire all animations
 // ============================================================
 
-window.addEventListener("DOMContentLoaded", async () => {
-	// 1. Hide all elements immediately before loading starts to prevent flicker
-	const logo = document.querySelector('[data-index="1"].flex.gap-2');
-	const navLinks = document.querySelectorAll('.animate-fade-in-top.nav-border');
-	const hamBtn = document.getElementById('ham-btn');
-	const headerLetters = document.querySelectorAll('.header-text .animate-fade-in-text');
-	const descriText = document.querySelector('.descri-text');
-	const disclaimerText = document.querySelector('.disclaimer-text');
-	const exploreBtn = document.querySelector('a.nav-black.animate-fade-in-text');
-	const heroImg = document.querySelector('.slides-wrapper .section:first-child img');
-
-	if (logo) gsap.set(logo, { opacity: 0 });
-	if (navLinks.length) gsap.set(navLinks, { opacity: 0 });
-	if (hamBtn) gsap.set(hamBtn, { opacity: 0 });
-	if (headerLetters.length) gsap.set(headerLetters, { opacity: 0 });
-	if (descriText) gsap.set(descriText, { opacity: 0 });
-	if (disclaimerText) gsap.set(disclaimerText, { opacity: 0 });
-	if (exploreBtn) gsap.set(exploreBtn, { opacity: 0 });
-	if (heroImg) gsap.set(heroImg, { opacity: 0 });
-
-	// 2. Wait for all assets to load
-	await preloadAssets();
-
-	// 3. Play hero entrance animation
+window.addEventListener("DOMContentLoaded", () => {
+	// 1. Play hero entrance animation
 	initHeroEntrance();
 	initHeroScrollEffect();
 
