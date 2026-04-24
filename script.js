@@ -144,9 +144,11 @@ function initHeroEntrance() {
 	if (descriText) gsap.set(descriText, { opacity: 0, y: 30 });
 	if (disclaimerText) gsap.set(disclaimerText, { opacity: 0, y: 20 });
 	if (exploreBtn) gsap.set(exploreBtn, { opacity: 0, y: 25 });
-	if (heroImg) gsap.set(heroImg, { opacity: 0, y: 80, scale: 1.05 });
+	if (heroImg) gsap.set(heroImg, { opacity: 0, y: 100, scale: 1.1 });
 
 	// --- Build timeline ---
+	// Add 1.5s delay after preloader slides up for the blank white moment
+	tl.to({}, { duration: 1.5 }); 
 
 	// 1. Logo drops in
 	if (logo) {
@@ -195,9 +197,9 @@ function initHeroEntrance() {
 			opacity: 1,
 			y: 0,
 			scale: 1,
-			duration: 0.3,
-			ease: "power2.out"
-		}, 0.6);
+			duration: 2,
+			ease: "power4.out"
+		}, "+=0.2"); // Start slightly after other animations begin
 	}
 
 	// Clear inline styles after all animations complete
@@ -687,21 +689,25 @@ function preloadAssets() {
 
 function finishPreloader(preloader, resolve) {
 	let resolved = false;
-	preloader.classList.add("loaded");
-	document.body.style.overflow = "";
+	
+	// Add delay before starting the exit animation
+	setTimeout(() => {
+		preloader.classList.add("loaded");
+		document.body.style.overflow = "";
 
-	function done() {
-		if (resolved) return;
-		resolved = true;
-		if (preloader.parentNode) preloader.remove();
-		resolve();
-	}
+		function done() {
+			if (resolved) return;
+			resolved = true;
+			if (preloader.parentNode) preloader.remove();
+			resolve();
+		}
 
-	// Remove preloader from DOM after transition
-	preloader.addEventListener("transitionend", done, { once: true });
+		// Remove preloader from DOM after transition
+		preloader.addEventListener("transitionend", done, { once: true });
 
-	// Fallback if transitionend doesn't fire
-	setTimeout(done, 1000);
+		// Fallback if transitionend doesn't fire
+		setTimeout(done, 2000); 
+	}, 1500); // 1.5s delay
 }
 
 // ============================================================
@@ -709,18 +715,35 @@ function finishPreloader(preloader, resolve) {
 // ============================================================
 
 window.addEventListener("DOMContentLoaded", async () => {
-	// Wait for all assets to load
+	// 1. Hide all elements immediately before loading starts to prevent flicker
+	const logo = document.querySelector('[data-index="1"].flex.gap-2');
+	const navLinks = document.querySelectorAll('.animate-fade-in-top.nav-border');
+	const hamBtn = document.getElementById('ham-btn');
+	const headerLetters = document.querySelectorAll('.header-text .animate-fade-in-text');
+	const descriText = document.querySelector('.descri-text');
+	const disclaimerText = document.querySelector('.disclaimer-text');
+	const exploreBtn = document.querySelector('a.nav-black.animate-fade-in-text');
+	const heroImg = document.querySelector('.slides-wrapper .section:first-child img');
+
+	if (logo) gsap.set(logo, { opacity: 0 });
+	if (navLinks.length) gsap.set(navLinks, { opacity: 0 });
+	if (hamBtn) gsap.set(hamBtn, { opacity: 0 });
+	if (headerLetters.length) gsap.set(headerLetters, { opacity: 0 });
+	if (descriText) gsap.set(descriText, { opacity: 0 });
+	if (disclaimerText) gsap.set(disclaimerText, { opacity: 0 });
+	if (exploreBtn) gsap.set(exploreBtn, { opacity: 0 });
+	if (heroImg) gsap.set(heroImg, { opacity: 0 });
+
+	// 2. Wait for all assets to load
 	await preloadAssets();
 
-	// Play hero entrance animation first
+	// 3. Play hero entrance animation
 	initHeroEntrance();
 	initHeroScrollEffect();
 
 	initNavAnimationDelay();
 	initAboutAnimations();
 	
-	// Initialize in DOM order for correct ScrollTrigger calculations
-	// The Pinning section must be initialized before elements below it
 	initAboutCardScrollReveal();
 
 	initProjectAnimations();
@@ -728,12 +751,9 @@ window.addEventListener("DOMContentLoaded", async () => {
 	initCollapse();
 	initFooterAnimations();
 
-	// Initialize general fades after pinning to ensure correct positions
 	initScrollFade();
-	
 	initSidebar();
 
-	// Final refresh to lock in all positions
 	ScrollTrigger.refresh();
 });
 
